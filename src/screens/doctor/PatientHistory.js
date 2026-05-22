@@ -1,0 +1,188 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import Header from '../../components/Header';
+import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
+
+const PatientHistory = ({ navigation }) => {
+  const [search, setSearch] = useState('');
+
+  const patients = [
+    { id: '1', name: 'Leonard Hofstadter', age: '32', gender: 'Male', diagnoses: ['Mild Hypertension', 'Lactose Allergy'], visits: '4 Visits' },
+    { id: '2', name: 'Penny Teller', age: '28', gender: 'Female', diagnoses: ['Seasonal Allergy'], visits: '1 Visit' },
+    { id: '3', name: 'Sheldon Cooper', age: '33', gender: 'Male', diagnoses: ['Arrhythmia Impress', 'Neuro Consultation'], visits: '8 Visits' },
+    { id: '4', name: 'Bernadette Rostenkowski', age: '29', gender: 'Female', diagnoses: ['Post-natal recovery'], visits: '3 Visits' },
+  ];
+
+  const filteredPatients = patients.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const renderPatient = ({ item }) => (
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.8}
+      onPress={() => alert(`Opening comprehensive timeline for ${item.name}`)}
+    >
+      <View style={styles.cardHeader}>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>
+            {item.name.split(' ').map(n => n[0]).join('')}
+          </Text>
+        </View>
+        <View style={styles.info}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.subInfo}>{item.gender} • {item.age} Years • {item.visits}</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
+      </View>
+
+      <View style={styles.divider} />
+
+      <View style={styles.diagnosesSection}>
+        <Text style={styles.diagnosesLabel}>Diagnoses History:</Text>
+        <View style={styles.chips}>
+          {item.diagnoses.map((diag, i) => (
+            <View key={i} style={styles.chip}>
+              <Text style={styles.chipText}>{diag}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Header title="Patient Medical timelines" onBackPress={() => navigation.goBack()} />
+      <View style={styles.content}>
+        {/* Premium search bar */}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color={COLORS.textSecondary} style={styles.searchIcon} />
+          <TextInput
+            placeholder="Search patient records database..."
+            placeholderTextColor={COLORS.textSecondary}
+            value={search}
+            onChangeText={setSearch}
+            style={styles.searchInput}
+          />
+        </View>
+
+        <FlatList
+          data={filteredPatients}
+          keyExtractor={(item) => item.id}
+          renderItem={renderPatient}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  content: {
+    flex: 1,
+    padding: 24,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: BORDER_RADIUS.input,
+    paddingHorizontal: 16,
+    height: 54,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    marginBottom: 24,
+    ...SHADOWS.soft,
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: SIZES.medium,
+    color: COLORS.text,
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
+  card: {
+    backgroundColor: COLORS.card,
+    borderRadius: BORDER_RADIUS.card,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1.2,
+    borderColor: '#F1F5F9',
+    ...SHADOWS.soft,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(14, 165, 233, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: SIZES.medium,
+    fontWeight: '800',
+    color: COLORS.primary,
+  },
+  info: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  name: {
+    fontSize: SIZES.medium,
+    fontWeight: '800',
+    color: COLORS.text,
+  },
+  subInfo: {
+    fontSize: SIZES.small,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#F1F5F9',
+    marginVertical: 16,
+  },
+  diagnosesSection: {
+    alignItems: 'flex-start',
+  },
+  diagnosesLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+    marginBottom: 8,
+  },
+  chips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  chip: {
+    backgroundColor: '#F1F5F9',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginRight: 8,
+    marginBottom: 6,
+  },
+  chipText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+});
+
+export default PatientHistory;

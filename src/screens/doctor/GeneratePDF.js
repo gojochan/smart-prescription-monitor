@@ -1,0 +1,541 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import Header from '../../components/Header';
+import Loading from '../../components/Loading';
+import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
+
+const GeneratePDF = ({ route, navigation }) => {
+  const { prescriptionId, patientData } = route.params || {};
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSigned, setIsSigned] = useState(patientData?.status === 'Signed');
+
+  const defaultPatient = {
+    patientName: 'Leonard Hofstadter',
+    age: '32',
+    gender: 'Male',
+    date: 'May 22, 2026',
+    diagnosis: 'Cardio Checkup - Hypertensive',
+    code: 'SPM-9821-LH',
+  };
+
+  const patient = patientData || defaultPatient;
+
+  const medicines = [
+    { name: 'Telmisartan Tablets IP', strength: '40 mg', dosage: '1-0-0', instructions: 'Before breakfast', duration: '30 Days' },
+    { name: 'Amlodipine Besylate', strength: '5 mg', dosage: '0-0-1', instructions: 'At bedtime', duration: '30 Days' },
+    { name: 'Atorvastatin Calcium', strength: '10 mg', dosage: '0-0-1', instructions: 'After dinner', duration: '15 Days' },
+  ];
+
+  const handleDownload = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      Alert.alert(
+        'Success',
+        'PDF has been saved to your downloads successfully.',
+        [{ text: 'Open PDF', style: 'default' }, { text: 'OK', style: 'cancel' }]
+      );
+    }, 2000);
+  };
+
+  const handleSign = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsSigned(true);
+    }, 1500);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Header 
+        title="PDF Preview" 
+        onBackPress={() => navigation.goBack()} 
+        rightComponent={
+          <TouchableOpacity onPress={handleDownload} style={styles.downloadBtn}>
+            <Ionicons name="download-outline" size={20} color={COLORS.primary} />
+          </TouchableOpacity>
+        }
+      />
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Paper Sheet Representation */}
+        <View style={styles.paper}>
+          {/* Header */}
+          <View style={styles.letterhead}>
+            <View style={styles.clinicDetails}>
+              <Text style={styles.clinicName}>SMART MEDICAL CENTER</Text>
+              <Text style={styles.clinicSub}>100 Innovation Way, Tech Park, Suite 400</Text>
+              <Text style={styles.clinicPhone}>Tel: +1 (555) 123-4567 • www.smart prescription.com</Text>
+            </View>
+            <View style={styles.spmLogo}>
+              <Ionicons name="git-network" size={32} color={COLORS.primary} />
+              <Text style={styles.spmLogoText}>SPM AI</Text>
+            </View>
+          </View>
+
+          <View style={styles.divider} />
+
+          {/* Practitioner Info */}
+          <View style={styles.drDetailsRow}>
+            <View>
+              <Text style={styles.drName}>Dr. Sarah Wilson, MD</Text>
+              <Text style={styles.drSpecialty}>Consulting Cardiologist & Physician</Text>
+              <Text style={styles.drLicense}>License No: LIC-2024-897315</Text>
+            </View>
+            <View style={styles.rxBadge}>
+              <Text style={styles.rxBadgeText}>Rx</Text>
+            </View>
+          </View>
+
+          <View style={styles.lightDivider} />
+
+          {/* Patient Details Table */}
+          <View style={styles.patientGrid}>
+            <View style={styles.gridRow}>
+              <View style={styles.gridCol}>
+                <Text style={styles.gridLabel}>PATIENT NAME</Text>
+                <Text style={styles.gridValue}>{patient.patientName}</Text>
+              </View>
+              <View style={styles.gridCol}>
+                <Text style={styles.gridLabel}>DATE</Text>
+                <Text style={styles.gridValue}>{patient.date}</Text>
+              </View>
+            </View>
+            <View style={styles.gridRow}>
+              <View style={styles.gridCol}>
+                <Text style={styles.gridLabel}>AGE / GENDER</Text>
+                <Text style={styles.gridValue}>{patient.age} Yrs / {patient.gender || 'Male'}</Text>
+              </View>
+              <View style={styles.gridCol}>
+                <Text style={styles.gridLabel}>RECORD ID</Text>
+                <Text style={styles.gridValue}>{patient.code}</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.lightDivider} />
+
+          {/* Diagnosis */}
+          <View style={styles.section}>
+            <Text style={styles.sectionHeading}>DIAGNOSIS / CLINICAL IMPRESSION</Text>
+            <Text style={styles.diagnosisText}>{patient.diagnosis}</Text>
+          </View>
+
+          <View style={styles.lightDivider} />
+
+          {/* Medicines Table */}
+          <View style={styles.section}>
+            <Text style={styles.sectionHeading}>MEDICATIONS PRESCRIBED</Text>
+            
+            {medicines.map((med, index) => (
+              <View key={index} style={styles.medicineItem}>
+                <View style={styles.medHeaderRow}>
+                  <Text style={styles.medIndex}>{index + 1}.</Text>
+                  <Text style={styles.medName}>{med.name} - {med.strength}</Text>
+                  <Text style={styles.medDuration}>{med.duration}</Text>
+                </View>
+                <View style={styles.medDetailsRow}>
+                  <View style={styles.medDetailChip}>
+                    <Text style={styles.medChipText}>Dosage: {med.dosage}</Text>
+                  </View>
+                  <View style={styles.medDetailChip}>
+                    <Text style={styles.medChipText}>{med.instructions}</Text>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.spacer} />
+
+          {/* Footer Signature */}
+          <View style={styles.pdfFooter}>
+            <View style={styles.footerNoteContainer}>
+              <Ionicons name="information-circle-outline" size={14} color={COLORS.textSecondary} />
+              <Text style={styles.footerNote}>
+                This prescription is digitally protected. QR validation key is embedded on patient dashboard.
+              </Text>
+            </View>
+            
+            <View style={styles.signatureCol}>
+              {isSigned ? (
+                <View style={styles.verifiedStampContainer}>
+                  <View style={styles.stampBorder}>
+                    <Ionicons name="checkmark-seal" size={24} color={COLORS.secondary} />
+                    <Text style={styles.stampText}>DIGITALLY SIGNED</Text>
+                    <Text style={styles.stampDate}>{patient.date}</Text>
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.unsignedContainer}>
+                  <Text style={styles.unsignedText}>Requires Signature</Text>
+                  <View style={styles.unsignedLine} />
+                </View>
+              )}
+              <Text style={styles.sigDrName}>Dr. Sarah Wilson</Text>
+              <Text style={styles.sigDrTitle}>Consultant Physician</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Outer Actions */}
+        <View style={styles.actionsContainer}>
+          {!isSigned && (
+            <TouchableOpacity onPress={handleSign} style={[styles.actionBtn, styles.signBtn]} activeOpacity={0.8}>
+              <Ionicons name="pencil" size={20} color="#FFFFFF" style={styles.btnIcon} />
+              <Text style={styles.signBtnText}>Apply Cryptographic Signature</Text>
+            </TouchableOpacity>
+          )}
+
+          <View style={styles.rowActions}>
+            <TouchableOpacity onPress={handleDownload} style={[styles.actionBtn, styles.downloadBtnBig]} activeOpacity={0.8}>
+              <Ionicons name="document-text-outline" size={20} color="#FFFFFF" style={styles.btnIcon} />
+              <Text style={styles.actionBtnText}>Save PDF Document</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              onPress={() => Alert.alert('Share', 'Secure document shared link copied to clipboard.')} 
+              style={[styles.actionBtn, styles.shareBtn]} 
+              activeOpacity={0.8}
+            >
+              <Ionicons name="share-social-outline" size={20} color={COLORS.text} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+
+      {isLoading && <Loading visible={true} message={isSigned ? "Generating PDF File..." : "Signing Document..."} />}
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#E2E8F0', // Nice light slate background to make sheet stand out
+  },
+  downloadBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.2,
+    borderColor: '#E2E8F0',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  paper: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    minHeight: 650,
+    ...SHADOWS.premium,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+  },
+  letterhead: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  clinicDetails: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  clinicName: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: COLORS.dark,
+    letterSpacing: 0.5,
+  },
+  clinicSub: {
+    fontSize: 10,
+    color: COLORS.textSecondary,
+    marginTop: 4,
+    fontWeight: '600',
+  },
+  clinicPhone: {
+    fontSize: 9,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  spmLogo: {
+    alignItems: 'center',
+    backgroundColor: '#F0F9FF',
+    padding: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
+  },
+  spmLogoText: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: COLORS.primary,
+    marginTop: 2,
+  },
+  divider: {
+    height: 3,
+    backgroundColor: COLORS.primary,
+    marginVertical: 16,
+    borderRadius: 2,
+  },
+  drDetailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  drName: {
+    fontSize: SIZES.medium,
+    fontWeight: '800',
+    color: COLORS.text,
+  },
+  drSpecialty: {
+    fontSize: SIZES.small,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  drLicense: {
+    fontSize: 10,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  rxBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#FFFBEB',
+    borderWidth: 1.2,
+    borderColor: '#FEF3C7',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rxBadgeText: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: COLORS.warning,
+    fontStyle: 'italic',
+  },
+  lightDivider: {
+    height: 1.2,
+    backgroundColor: '#F1F5F9',
+    marginVertical: 14,
+  },
+  patientGrid: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  gridRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  gridCol: {
+    flex: 1,
+  },
+  gridLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+    letterSpacing: 0.5,
+  },
+  gridValue: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: COLORS.text,
+    marginTop: 2,
+  },
+  section: {
+    marginVertical: 4,
+  },
+  sectionHeading: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: COLORS.primary,
+    letterSpacing: 0.8,
+    marginBottom: 8,
+  },
+  diagnosisText: {
+    fontSize: SIZES.font,
+    color: COLORS.text,
+    lineHeight: 20,
+    fontWeight: '600',
+  },
+  medicineItem: {
+    marginBottom: 12,
+  },
+  medHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  medIndex: {
+    fontSize: SIZES.font,
+    fontWeight: '800',
+    color: COLORS.textSecondary,
+    width: 20,
+  },
+  medName: {
+    fontSize: SIZES.font,
+    fontWeight: '800',
+    color: COLORS.text,
+    flex: 1,
+  },
+  medDuration: {
+    fontSize: SIZES.small,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+  },
+  medDetailsRow: {
+    flexDirection: 'row',
+    paddingLeft: 20,
+    marginTop: 4,
+  },
+  medDetailChip: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  medChipText: {
+    fontSize: 10,
+    color: COLORS.textSecondary,
+    fontWeight: '700',
+  },
+  spacer: {
+    flex: 1,
+    minHeight: 40,
+  },
+  pdfFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginTop: 20,
+  },
+  footerNoteContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginRight: 16,
+    backgroundColor: '#F8FAFC',
+    padding: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  footerNote: {
+    fontSize: 8,
+    color: COLORS.textSecondary,
+    lineHeight: 12,
+    marginLeft: 4,
+    flex: 1,
+  },
+  signatureCol: {
+    alignItems: 'center',
+    minWidth: 120,
+  },
+  verifiedStampContainer: {
+    marginBottom: 4,
+  },
+  stampBorder: {
+    borderWidth: 1.5,
+    borderColor: COLORS.secondary,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(34, 197, 94, 0.05)',
+    alignItems: 'center',
+  },
+  stampText: {
+    fontSize: 7,
+    fontWeight: '900',
+    color: COLORS.secondary,
+    letterSpacing: 0.5,
+    marginTop: 2,
+  },
+  stampDate: {
+    fontSize: 6,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+  },
+  unsignedContainer: {
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  unsignedText: {
+    fontSize: 9,
+    color: COLORS.danger,
+    fontWeight: '700',
+    fontStyle: 'italic',
+  },
+  unsignedLine: {
+    width: 100,
+    height: 1,
+    backgroundColor: COLORS.border,
+    marginTop: 4,
+  },
+  sigDrName: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: COLORS.text,
+  },
+  sigDrTitle: {
+    fontSize: 8,
+    color: COLORS.textSecondary,
+    marginTop: 1,
+  },
+  actionsContainer: {
+    marginTop: 20,
+  },
+  actionBtn: {
+    height: 52,
+    borderRadius: BORDER_RADIUS.button,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    ...SHADOWS.soft,
+  },
+  signBtn: {
+    backgroundColor: COLORS.secondary,
+    marginBottom: 12,
+  },
+  signBtnText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  rowActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  downloadBtnBig: {
+    backgroundColor: COLORS.primary,
+    flex: 1,
+    marginRight: 12,
+  },
+  actionBtnText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  shareBtn: {
+    backgroundColor: '#FFFFFF',
+    width: 52,
+    borderWidth: 1.2,
+    borderColor: '#CBD5E1',
+  },
+  btnIcon: {
+    marginRight: 8,
+  },
+});
+
+export default GeneratePDF;
