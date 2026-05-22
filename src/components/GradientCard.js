@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   gradient: {
-    padding: 20,
+    padding: 28,
     width: '100%',
   },
 });

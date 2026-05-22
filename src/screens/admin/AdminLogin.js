@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 30,
-    marginTop: 10,
+    marginTop: 50, // Moved lower down for easy thumb access
   },
   backButton: {
     width: 44,
@@ -106,10 +106,17 @@ const styles = StyleSheet.create({
   skipBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: 'rgba(14, 165, 233, 0.1)',
-    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(226, 232, 240, 0.6)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
   },
   skipBtnText: {
     color: COLORS.primary,

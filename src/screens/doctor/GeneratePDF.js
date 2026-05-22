@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
@@ -10,33 +13,140 @@ const GeneratePDF = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSigned, setIsSigned] = useState(patientData?.status === 'Signed');
 
-  const defaultPatient = {
-    patientName: 'Leonard Hofstadter',
-    age: '32',
-    gender: 'Male',
-    date: 'May 22, 2026',
-    diagnosis: 'Cardio Checkup - Hypertensive',
-    code: 'SPM-9821-LH',
+  // If we receive data from CreatePrescription
+  const incomingData = route.params?.data || {};
+
+  const patient = {
+    patientName: incomingData.patientName || patientData?.patientName || defaultPatient.patientName,
+    age: incomingData.patientAge || patientData?.age || defaultPatient.age,
+    gender: incomingData.patientGender || patientData?.gender || defaultPatient.gender,
+    date: new Date().toLocaleDateString(),
+    diagnosis: incomingData.diagnosis || patientData?.diagnosis || defaultPatient.diagnosis,
+    code: incomingData.id || defaultPatient.code,
   };
 
-  const patient = patientData || defaultPatient;
-
-  const medicines = [
+  const medicines = incomingData.medicine ? [
+    { 
+      name: incomingData.medicine, 
+      strength: incomingData.dosage || '', 
+      dosage: incomingData.frequency || '', 
+      instructions: incomingData.instructions || '', 
+      duration: incomingData.duration || '' 
+    }
+  ] : [
     { name: 'Telmisartan Tablets IP', strength: '40 mg', dosage: '1-0-0', instructions: 'Before breakfast', duration: '30 Days' },
     { name: 'Amlodipine Besylate', strength: '5 mg', dosage: '0-0-1', instructions: 'At bedtime', duration: '30 Days' },
     { name: 'Atorvastatin Calcium', strength: '10 mg', dosage: '0-0-1', instructions: 'After dinner', duration: '15 Days' },
   ];
 
-  const handleDownload = () => {
+  const generateHTML = () => {
+    const medsHtml = medicines.map((med, index) => `
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd;">${index + 1}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd;"><strong>${med.name}</strong> ${med.strength}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd;">${med.dosage}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd;">${med.duration}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd;">${med.instructions}</td>
+      </tr>
+    `).join('');
+
+    return `
+      <html>
+        <head>
+          <style>
+            body { font-family: 'Helvetica', sans-serif; padding: 40px; color: #333; }
+            .header { text-align: center; margin-bottom: 40px; }
+            .header h1 { margin: 0; color: #0284C7; font-size: 28px; }
+            .header p { margin: 5px 0; color: #666; font-size: 14px; }
+            .divider { border-top: 3px solid #0284C7; margin: 20px 0; }
+            .dr-details { margin-bottom: 20px; }
+            .dr-details h2 { margin: 0; font-size: 20px; color: #333; }
+            .patient-grid { display: flex; flex-wrap: wrap; background: #F8FAFC; padding: 20px; border-radius: 10px; border: 1px solid #E2E8F0; margin-bottom: 20px; }
+            .grid-col { width: 50%; margin-bottom: 15px; }
+            .grid-label { font-size: 12px; font-weight: bold; color: #64748B; margin-bottom: 5px; }
+            .grid-value { font-size: 16px; font-weight: bold; color: #0F172A; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { text-align: left; padding: 10px; background: #F1F5F9; font-size: 14px; color: #475569; }
+            .footer { margin-top: 60px; text-align: right; }
+            .signature { border-top: 1px solid #333; display: inline-block; padding-top: 10px; width: 200px; text-align: center; margin-top: 40px; }
+            .stamp { color: #10B981; font-weight: bold; border: 2px solid #10B981; padding: 5px 10px; display: inline-block; transform: rotate(-5deg); margin-bottom: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>SMART MEDICAL CENTER</h1>
+            <p>100 Innovation Way, Tech Park, Suite 400</p>
+            <p>Tel: +1 (555) 123-4567 • www.smartprescription.com</p>
+          </div>
+          <div class="divider"></div>
+          <div class="dr-details">
+            <h2>Dr. Sarah Wilson, MD</h2>
+            <p style="margin: 5px 0; color: #666;">Consulting Cardiologist & Physician</p>
+            <p style="margin: 0; color: #666;">License No: LIC-2024-897315</p>
+          </div>
+          <div class="patient-grid">
+            <div class="grid-col">
+              <div class="grid-label">PATIENT NAME</div>
+              <div class="grid-value">${patient.patientName}</div>
+            </div>
+            <div class="grid-col">
+              <div class="grid-label">DATE</div>
+              <div class="grid-value">${patient.date}</div>
+            </div>
+            <div class="grid-col">
+              <div class="grid-label">AGE / GENDER</div>
+              <div class="grid-value">${patient.age} Yrs / ${patient.gender}</div>
+            </div>
+            <div class="grid-col">
+              <div class="grid-label">DIAGNOSIS</div>
+              <div class="grid-value">${patient.diagnosis}</div>
+            </div>
+          </div>
+          <h3>MEDICATIONS PRESCRIBED</h3>
+          <table>
+            <tr>
+              <th>#</th>
+              <th>Medicine</th>
+              <th>Dosage</th>
+              <th>Duration</th>
+              <th>Instructions</th>
+            </tr>
+            ${medsHtml}
+          </table>
+          <div class="footer">
+            ${isSigned ? '<div class="stamp">DIGITALLY SIGNED</div><br>' : ''}
+            <div class="signature">
+              <strong>Dr. Sarah Wilson</strong><br>
+              <span style="font-size: 12px; color: #666;">Consultant Physician</span>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  };
+
+  const handleDownload = async () => {
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const { uri } = await Print.printToFileAsync({
+        html: generateHTML(),
+        base64: false
+      });
       setIsLoading(false);
-      Alert.alert(
-        'Success',
-        'PDF has been saved to your downloads successfully.',
-        [{ text: 'Open PDF', style: 'default' }, { text: 'OK', style: 'cancel' }]
-      );
-    }, 2000);
+      
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      if (fileInfo.exists) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Share Prescription PDF',
+          UTI: 'com.adobe.pdf'
+        });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      Alert.alert('Error', 'Failed to generate and share PDF.');
+      console.error(error);
+    }
   };
 
   const handleSign = () => {

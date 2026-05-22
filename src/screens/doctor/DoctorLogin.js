@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
+import SafeImage from '../../components/SafeImage';
 import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
 
 const DoctorLogin = ({ navigation }) => {
@@ -30,22 +31,25 @@ const DoctorLogin = ({ navigation }) => {
         style={styles.keyboardView}
       >
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* Back & Skip Buttons - Shifted lower for thumb access */}
           <View style={styles.headerRow}>
             <TouchableOpacity onPress={() => navigation.navigate('RoleSelection')} style={styles.backButton}>
               <Ionicons name="arrow-back" size={24} color={COLORS.text} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('DoctorDashboard')} style={styles.skipBtn}>
-              <Text style={styles.skipBtnText}>Skip</Text>
-              <Ionicons name="arrow-forward" size={16} color={COLORS.primary} style={{marginLeft: 4}} />
+            
+            <TouchableOpacity onPress={() => navigation.navigate('DoctorDashboard')} style={styles.skipPillAbs}>
+              <Text style={styles.skipPillText}>Skip</Text>
+              <Ionicons name="arrow-forward" size={16} color={COLORS.primary} style={{marginLeft: 6}} />
             </TouchableOpacity>
           </View>
 
+          {/* Premium Illustration Rounded Card Thumbnail */}
           <View style={styles.illustrationWrapper}>
             <View style={styles.illustrationContainer}>
-              <Image
+              <SafeImage
                 source={require('../../../assets/images/doctor_illustration.png')}
                 style={styles.illustration}
-                resizeMode="contain"
+                resizeMode="cover"
               />
             </View>
           </View>
@@ -120,8 +124,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 30,
-    marginTop: 10,
+    marginBottom: 24,
+    marginTop: 50, // Moved lower down for easy thumb access
   },
   backButton: {
     width: 44,
@@ -131,24 +135,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  skipBtn: {
+  skipPillAbs: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: 'rgba(14, 165, 233, 0.1)',
-    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(226, 232, 240, 0.6)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  skipBtnText: {
+  skipPillText: {
     color: COLORS.primary,
     fontWeight: '700',
     fontSize: SIZES.font,
   },
   header: {
-    marginBottom: 30,
+    marginBottom: 24,
   },
   title: {
-    fontSize: SIZES.extraLarge,
+    fontSize: SIZES.extraLarge - 2,
     fontWeight: '900',
     color: COLORS.text,
     marginBottom: 10,
@@ -176,7 +187,7 @@ const styles = StyleSheet.create({
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 30,
+    marginVertical: 24,
   },
   dividerLine: {
     flex: 1,
@@ -194,24 +205,30 @@ const styles = StyleSheet.create({
   },
   illustrationWrapper: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   illustrationContainer: {
-    width: 180,
-    height: 180,
+    width: 160,
+    height: 160,
     borderRadius: 24,
     backgroundColor: '#FFFFFF',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
     overflow: 'hidden',
+    padding: 6,
+    shadowColor: '#000000',
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 6,
     borderWidth: 1,
     borderColor: '#F1F5F9',
-    ...SHADOWS.premium,
   },
   illustration: {
-    width: '85%',
-    height: '85%',
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
   },
 });
 
 export default DoctorLogin;
+

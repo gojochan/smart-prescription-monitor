@@ -7,6 +7,8 @@ import PremiumButton from '../../components/PremiumButton';
 import GradientCard from '../../components/GradientCard';
 import Loading from '../../components/Loading';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
+import { savePrescription, saveUpcomingReminders } from '../../utils/storage';
+import { scheduleMedicineReminders } from '../../utils/notifications';
 
 const CreatePrescription = ({ navigation }) => {
   const [step, setStep] = useState(1);
@@ -21,9 +23,10 @@ const CreatePrescription = ({ navigation }) => {
   // Medicine Selection States
   const [medicine, setMedicine] = useState('');
   const [dosage, setDosage] = useState('');
-  const [frequency, setFrequency] = useState('Once Daily');
+  const [frequency, setFrequency] = useState('Once daily');
   const [duration, setDuration] = useState('');
   const [instructions, setInstructions] = useState('');
+  const [startTime, setStartTime] = useState('');
 
   const handleNextStep = () => {
     if (step === 1) {
@@ -33,8 +36,8 @@ const CreatePrescription = ({ navigation }) => {
       }
       setStep(2);
     } else if (step === 2) {
-      if (!medicine || !dosage || !duration) {
-        alert('Please complete medicine dosage parameters.');
+      if (!medicine) {
+        alert('Please enter at least the medicine name.');
         return;
       }
       setStep(3);
@@ -49,23 +52,33 @@ const CreatePrescription = ({ navigation }) => {
     }
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setLoading(true);
+    
+    const prescriptionData = {
+      patientName,
+      patientAge,
+      patientGender,
+      diagnosis,
+      medicine,
+      dosage: dosage || '1 Tablet',
+      frequency: frequency || 'Once daily',
+      duration: duration || '1 day',
+      instructions: instructions || 'No additional instructions',
+      startTime: startTime || '09:00 AM',
+      doctorId: 'doc_123',
+    };
+
+    const savedPrescription = await savePrescription(prescriptionData);
+    
+    if (savedPrescription) {
+      const scheduledReminders = await scheduleMedicineReminders(savedPrescription);
+      await saveUpcomingReminders(scheduledReminders);
+    }
+
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('GeneratePDF', {
-        data: {
-          patientName,
-          patientAge,
-          patientGender,
-          diagnosis,
-          medicine,
-          dosage,
-          frequency,
-          duration,
-          instructions,
-        }
-      });
+      navigation.navigate('GeneratePDF', { data: prescriptionData });
     }, 1800);
   };
 
@@ -165,14 +178,14 @@ const CreatePrescription = ({ navigation }) => {
             />
 
             <Text style={styles.dropdownLabel}>Frequency</Text>
-            <View style={styles.freqContainer}>
-              {['Once Daily', 'Twice Daily', 'Thrice Daily'].map((f) => (
+            <View style={styles.chipContainer}>
+              {['Every 1 hour', 'Every 3 hours', 'Every 6 hours', 'Every 12 hours', 'Once daily', 'Twice daily', 'Custom'].map((f) => (
                 <TouchableOpacity
                   key={f}
                   onPress={() => setFrequency(f)}
-                  style={[styles.freqChip, frequency === f && styles.freqChipActive]}
+                  style={[styles.chip, frequency === f && styles.chipActive]}
                 >
-                  <Text style={[styles.freqChipText, frequency === f && styles.freqChipTextActive]}>
+                  <Text style={[styles.chipText, frequency === f && styles.chipTextActive]}>
                     {f}
                   </Text>
                 </TouchableOpacity>
@@ -180,19 +193,44 @@ const CreatePrescription = ({ navigation }) => {
             </View>
 
             <PremiumInput
-              label="Duration"
-              placeholder="e.g. 7 Days"
+              label="Duration (e.g., 5 days)"
+              placeholder="e.g. 5 days"
               value={duration}
               onChangeText={setDuration}
               iconName="time-outline"
             />
 
             <PremiumInput
-              label="Instructions (Optional)"
-              placeholder="e.g. Take after breakfast"
+              label="Start Time (Optional)"
+              placeholder="e.g. 08:00 AM"
+              value={startTime}
+              onChangeText={setStartTime}
+              iconName="alarm-outline"
+            />
+
+            <Text style={styles.dropdownLabel}>Instructions</Text>
+            <View style={styles.chipContainer}>
+              {['Before food', 'After food', 'Empty stomach'].map((inst) => (
+                <TouchableOpacity
+                  key={inst}
+                  onPress={() => setInstructions(inst)}
+                  style={[styles.chip, instructions === inst && styles.chipActive]}
+                >
+                  <Text style={[styles.chipText, instructions === inst && styles.chipTextActive]}>
+                    {inst}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <PremiumInput
+              label="Custom Instructions (Optional)"
+              placeholder="e.g. Avoid dairy products for 2 hours after taking"
               value={instructions}
               onChangeText={setInstructions}
               iconName="chatbox-ellipses-outline"
+              multiline={true}
+              numberOfLines={4}
             />
 
             <PremiumButton title="Review Details" onPress={handleNextStep} style={styles.actionBtn} />
@@ -212,9 +250,10 @@ const CreatePrescription = ({ navigation }) => {
               
               <Text style={styles.reviewTitle}>Rx Prescribed:</Text>
               <Text style={styles.medLabel}>{medicine}</Text>
-              <Text style={styles.medParams}>Dosage: {dosage} • {frequency}</Text>
-              <Text style={styles.medParams}>Duration: {duration}</Text>
-              {instructions ? <Text style={styles.medParams}>Instructions: {instructions}</Text> : null}
+              <Text style={styles.medParams}>Dosage: {dosage || '1 Tablet'} • {frequency || 'Once daily'}</Text>
+              <Text style={styles.medParams}>Duration: {duration || '1 day'}</Text>
+              <Text style={styles.medParams}>Instructions: {instructions || 'No additional instructions'}</Text>
+              <Text style={styles.medParams}>Start Time: {startTime || '09:00 AM'}</Text>
             </GradientCard>
 
             <PremiumButton title="Digitally Sign & Generate PDF" onPress={handleGenerate} style={styles.actionBtn} />
@@ -235,6 +274,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 24,
     flexGrow: 1,
+    paddingBottom: 120,
   },
   progressHeader: {
     flexDirection: 'row',
@@ -322,33 +362,34 @@ const styles = StyleSheet.create({
   genderBtnTextActive: {
     color: COLORS.primary,
   },
-  freqContainer: {
+  chipContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
     marginBottom: 20,
   },
-  freqChip: {
-    flex: 1,
-    height: 48,
+  chip: {
+    height: 40,
+    paddingHorizontal: 14,
     borderRadius: BORDER_RADIUS.input - 4,
     backgroundColor: COLORS.card,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 4,
+    marginRight: 8,
+    marginBottom: 8,
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
     ...SHADOWS.soft,
   },
-  freqChipActive: {
+  chipActive: {
     borderColor: COLORS.primary,
     backgroundColor: 'rgba(14, 165, 233, 0.04)',
   },
-  freqChipText: {
-    fontSize: 12,
+  chipText: {
+    fontSize: 13,
     color: COLORS.textSecondary,
     fontWeight: '700',
   },
-  freqChipTextActive: {
+  chipTextActive: {
     color: COLORS.primary,
   },
   actionBtn: {

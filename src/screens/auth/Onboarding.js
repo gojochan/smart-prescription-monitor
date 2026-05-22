@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Dimensions, Animated, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Dimensions, Animated, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import SafeImage from '../../components/SafeImage';
 import PremiumButton from '../../components/PremiumButton';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
@@ -30,7 +30,6 @@ const SLIDES = [
 
 const Onboarding = ({ navigation }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current;
 
   const handleNext = () => {
     if (currentSlideIndex < SLIDES.length - 1) {
@@ -42,19 +41,19 @@ const Onboarding = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.replace('RoleSelection')}>
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Floating Pill Skip Button - Moved Lower for Thumb Access */}
+      <TouchableOpacity onPress={() => navigation.replace('RoleSelection')} style={styles.skipPill}>
+        <Text style={styles.skipPillText}>Skip</Text>
+        <Ionicons name="arrow-forward" size={16} color={COLORS.primary} style={{marginLeft: 6}} />
+      </TouchableOpacity>
 
       <View style={styles.slideContainer}>
-        {/* Active illustration visual widget */}
+        {/* Active illustration visual widget - Rounded Rectangle Thumbnail */}
         <View style={styles.illustrationWrapper}>
-          <Image
+          <SafeImage
             source={SLIDES[currentSlideIndex].image}
             style={styles.illustration}
-            resizeMode="contain"
+            resizeMode="cover"
           />
         </View>
 
@@ -95,44 +94,64 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     justifyContent: 'space-between',
   },
-  header: {
-    alignItems: 'flex-end',
-    paddingHorizontal: 24,
-    paddingTop: 16,
+  skipPill: {
+    position: 'absolute',
+    top: 80, // Moved lower for comfortable tapping
+    right: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(226, 232, 240, 0.6)',
+    zIndex: 20,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  skipText: {
-    fontSize: SIZES.medium,
-    fontWeight: '600',
-    color: COLORS.textSecondary,
+  skipPillText: {
+    fontSize: SIZES.font,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
   slideContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 32,
+    marginTop: 80, // Added margin to clear the lower skip button
   },
   illustrationWrapper: {
-    width: width * 0.7,
-    height: width * 0.7,
-    borderRadius: BORDER_RADIUS.card,
+    width: width * 0.72,
+    height: width * 0.72,
+    borderRadius: 24,
     backgroundColor: '#FFFFFF',
-    alignItems: 'center',
     justifyContent: 'center',
-    ...SHADOWS.premium,
-    marginBottom: 40,
+    alignItems: 'center',
     overflow: 'hidden',
+    padding: 8,
+    shadowColor: '#000000',
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 6,
+    marginBottom: 40,
     borderWidth: 1,
     borderColor: '#F1F5F9',
   },
   illustration: {
     width: '100%',
     height: '100%',
+    borderRadius: 20,
   },
   textWrapper: {
     alignItems: 'center',
   },
   title: {
-    fontSize: SIZES.large * 1.2,
+    fontSize: SIZES.large * 1.15,
     fontWeight: '800',
     color: COLORS.text,
     textAlign: 'center',

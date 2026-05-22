@@ -27,6 +27,7 @@ const PremiumInput = ({
           styles.inputContainer,
           isFocused && styles.inputFocused,
           error && styles.inputError,
+          props.multiline && styles.inputContainerMultiline,
         ]}
       >
         {inputIcon && (
@@ -47,6 +48,7 @@ const PremiumInput = ({
           keyboardType={keyboardType}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          textAlignVertical={props.multiline ? 'top' : 'center'}
           {...props}
         />
         {secureTextEntry && (
@@ -89,6 +91,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: SIZES.medium,
     height: 56,
     ...SHADOWS.soft,
+  },
+  inputContainerMultiline: {
+    height: 'auto',
+    minHeight: 100,
+    alignItems: 'flex-start',
+    paddingVertical: 12,
   },
   inputFocused: {
     borderColor: COLORS.primary,

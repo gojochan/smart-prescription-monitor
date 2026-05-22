@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import GradientCard from '../../components/GradientCard';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
+import { getUpcomingReminders, markReminderTaken } from '../../utils/storage';
 
 const { width } = Dimensions.get('window');
 
@@ -11,10 +12,24 @@ const PatientDashboard = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('home');
   const [qrVisible, setQrVisible] = useState(false);
 
-  const upcomingDoses = [
-    { id: '1', medName: 'Telmisartan', strength: '40 mg', time: '09:00 AM', taken: false, relation: 'Before Breakfast' },
-    { id: '2', medName: 'Atorvastatin', strength: '10 mg', time: '09:30 PM', taken: false, relation: 'After Dinner' },
-  ];
+  const [upcomingDoses, setUpcomingDoses] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadReminders();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const loadReminders = async () => {
+    const data = await getUpcomingReminders();
+    setUpcomingDoses(data.slice(0, 3));
+  };
+
+  const handleTakeDose = async (id) => {
+    await markReminderTaken(id);
+    loadReminders();
+  };
 
   const quickStats = [
     { label: 'Weekly Adherence', value: '94%', icon: 'flame', color: COLORS.secondary },
@@ -24,9 +39,11 @@ const PatientDashboard = ({ navigation }) => {
 
   const menuOptions = [
     { title: 'My Prescriptions', desc: 'Secure digital locker', icon: 'document-text-outline', colors: [COLORS.primary, '#0284C7'], route: 'MyPrescriptions' },
-    { title: 'Pill History', desc: 'Adherence timelines & charts', icon: 'analytics-outline', colors: [COLORS.secondary, '#059669'], route: 'MedicineHistory' },
-    { title: 'Appointments', desc: 'Book or check consultations', icon: 'time-outline', colors: [COLORS.dark, '#1E293B'], route: 'PatientAppointments' },
-    { title: 'Emergency Info', desc: 'Key medical parameters', icon: 'heart-outline', colors: [COLORS.danger, '#DC2626'], route: 'PatientProfile' },
+    { title: 'Upcoming', desc: 'Future scheduled doses', icon: 'time-outline', colors: [COLORS.secondary, '#059669'], route: 'UpcomingSchedule' },
+    { title: 'Completed Doses', desc: 'Successfully taken', icon: 'checkmark-circle-outline', colors: [COLORS.success, '#22C55E'], route: 'CompletedMedicines' },
+    { title: 'Missed Doses', desc: 'Medicines you forgot', icon: 'close-circle-outline', colors: [COLORS.danger, '#EF4444'], route: 'MissedMedicines' },
+    { title: 'Reminder History', desc: 'Timeline of alarms', icon: 'list-outline', colors: [COLORS.dark, '#1E293B'], route: 'MedicineReminderHistory' },
+    { title: 'Emergency Info', desc: 'Key medical parameters', icon: 'heart-outline', colors: [COLORS.warning, '#F59E0B'], route: 'PatientProfile' },
   ];
 
   return (
@@ -76,20 +93,24 @@ const PatientDashboard = ({ navigation }) => {
         {/* Next Dose Alert Widget */}
         <Text style={styles.sectionTitle}>Pill Reminders Today</Text>
         <View style={styles.reminderCard}>
-          {upcomingDoses.map((dose, i) => (
-            <View key={dose.id} style={[styles.doseItem, i === upcomingDoses.length - 1 && styles.noBorder]}>
-              <View style={styles.doseIconCircle}>
-                <Ionicons name="alarm-outline" size={22} color={COLORS.primary} />
+          {upcomingDoses.length === 0 ? (
+            <Text style={{ textAlign: 'center', color: COLORS.textSecondary, padding: 10 }}>No upcoming doses currently.</Text>
+          ) : (
+            upcomingDoses.map((dose, i) => (
+              <View key={dose.id} style={[styles.doseItem, i === upcomingDoses.length - 1 && styles.noBorder]}>
+                <View style={styles.doseIconCircle}>
+                  <Ionicons name="alarm-outline" size={22} color={COLORS.primary} />
+                </View>
+                <View style={styles.doseDetails}>
+                  <Text style={styles.doseMedName}>{dose.medicine} <Text style={styles.doseStrength}>{dose.dosage}</Text></Text>
+                  <Text style={styles.doseSubText}>{new Date(dose.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} • {dose.instructions || 'As directed'}</Text>
+                </View>
+                <TouchableOpacity onPress={() => handleTakeDose(dose.id)} style={styles.takeBtn} activeOpacity={0.7}>
+                  <Text style={styles.takeBtnText}>Take</Text>
+                </TouchableOpacity>
               </View>
-              <View style={styles.doseDetails}>
-                <Text style={styles.doseMedName}>{dose.medName} <Text style={styles.doseStrength}>{dose.strength}</Text></Text>
-                <Text style={styles.doseSubText}>{dose.time} • {dose.relation}</Text>
-              </View>
-              <TouchableOpacity style={styles.takeBtn} activeOpacity={0.7}>
-                <Text style={styles.takeBtnText}>Take</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+            ))
+          )}
         </View>
 
         {/* Dash Grid Options */}
@@ -251,7 +272,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 24,
-    paddingBottom: 110,
+    flexGrow: 1,
+    paddingBottom: 120,
   },
   statsRow: {
     flexDirection: 'row',

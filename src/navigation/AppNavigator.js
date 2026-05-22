@@ -30,6 +30,10 @@ import MyPrescriptions from '../screens/patient/MyPrescriptions';
 import MedicineHistory from '../screens/patient/MedicineHistory';
 import PatientProfile from '../screens/patient/PatientProfile';
 import Appointments from '../screens/patient/Appointments';
+import UpcomingSchedule from '../screens/patient/UpcomingSchedule';
+import CompletedMedicines from '../screens/patient/CompletedMedicines';
+import MissedMedicines from '../screens/patient/MissedMedicines';
+import MedicineReminderHistory from '../screens/patient/MedicineReminderHistory';
 
 // Organization Stack
 import OrganizationRegister from '../screens/organization/OrganizationRegister';
@@ -83,6 +87,10 @@ const AppNavigator = () => {
       <Stack.Screen name="MedicineHistory" component={MedicineHistory} />
       <Stack.Screen name="PatientProfile" component={PatientProfile} />
       <Stack.Screen name="PatientAppointments" component={Appointments} />
+      <Stack.Screen name="UpcomingSchedule" component={UpcomingSchedule} />
+      <Stack.Screen name="CompletedMedicines" component={CompletedMedicines} />
+      <Stack.Screen name="MissedMedicines" component={MissedMedicines} />
+      <Stack.Screen name="MedicineReminderHistory" component={MedicineReminderHistory} />
 
       {/* Organization Module */}
       <Stack.Screen name="OrganizationRegister" component={OrganizationRegister} />
