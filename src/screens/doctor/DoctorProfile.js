@@ -226,7 +226,6 @@ const styles = StyleSheet.create({
   },
   cardStatsDivider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     marginVertical: 20,
   },
   profileStats: {
@@ -251,7 +250,6 @@ const styles = StyleSheet.create({
   statDivider: {
     width: 1,
     height: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   sectionTitle: {
     fontSize: SIZES.medium + 1,
@@ -263,9 +261,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card,
     padding: 20,
-    marginBottom: 28,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
+    marginBottom: 36,
+    borderWidth: 1.5,
+    borderColor: COLORS.cardBorder,
     ...SHADOWS.soft,
   },
   credentialRow: {
@@ -276,7 +274,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F0F9FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
@@ -298,7 +295,6 @@ const styles = StyleSheet.create({
   },
   credDivider: {
     height: 1.2,
-    backgroundColor: '#F1F5F9',
     marginVertical: 14,
   },
   optionsList: {
@@ -306,9 +302,9 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.card,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginBottom: 28,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
+    marginBottom: 36,
+    borderWidth: 1.5,
+    borderColor: COLORS.cardBorder,
     ...SHADOWS.soft,
   },
   optionItem: {
@@ -316,17 +312,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1.2,
-    borderBottomColor: '#F8FAFC',
+    borderBottomColor: 'rgba(255,255,255,0.15)',
   },
   optionIconCircle: {
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'rgba(255,255,255,0.2)',
     marginRight: 14,
   },
   optionTextCol: {

@@ -37,7 +37,7 @@ const MedicineHistory = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Pill History" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Pill History" onBackPress={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Adherence Card */}
@@ -196,7 +196,6 @@ const styles = StyleSheet.create({
     borderColor: COLORS.secondary,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   percentageText: {
     fontSize: SIZES.font + 1,
@@ -205,7 +204,6 @@ const styles = StyleSheet.create({
   },
   cardDivider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     marginVertical: 20,
   },
   statsRow: {
@@ -230,7 +228,6 @@ const styles = StyleSheet.create({
   statDivider: {
     width: 1,
     height: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   sectionTitle: {
     fontSize: SIZES.medium + 1,
@@ -297,7 +294,6 @@ const styles = StyleSheet.create({
     ...SHADOWS.soft,
   },
   doseCardTaken: {
-    backgroundColor: '#F8FAFC',
     borderColor: '#E2E8F0',
     opacity: 0.8,
   },
@@ -318,7 +314,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(16, 185, 129, 0.08)',
   },
   statusIconCirclePending: {
-    backgroundColor: '#F8FAFC',
   },
   doseInfo: {
     flex: 1,
@@ -349,10 +344,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   badgeMorning: {
-    backgroundColor: '#FFFBEB',
   },
   badgeAfternoon: {
-    backgroundColor: '#F0FDF4',
   },
   badgeEvening: {
     backgroundColor: '#ECFDF5',

@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
 import SafeImage from '../../components/SafeImage';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
 
 const DoctorLogin = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleLogin = () => {
-    if (!email || !password) {
-      alert('Please fill in all credentials.');
+    const newErrors = {};
+    if (!email) newErrors.email = 'Email address is required';
+    if (!password) newErrors.password = 'Password is required';
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+    
+    setErrors({});
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -25,7 +33,7 @@ const DoctorLogin = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PremiumBackground safeArea={false} colors={['#0f172a', '#0c4a6e']}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -64,18 +72,20 @@ const DoctorLogin = ({ navigation }) => {
               label="Official Email Address"
               placeholder="e.g. sarah.wilson@smp.com"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => { setEmail(text); setErrors(prev => ({...prev, email: null})); }}
               keyboardType="email-address"
               iconName="mail-outline"
+              error={errors.email}
             />
 
             <PremiumInput
               label="Security Password"
               placeholder="••••••••••••"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(text) => { setPassword(text); setErrors(prev => ({...prev, password: null})); }}
               secureTextEntry
               iconName="lock-closed-outline"
+              error={errors.password}
             />
 
             <TouchableOpacity
@@ -102,16 +112,15 @@ const DoctorLogin = ({ navigation }) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-
       <Loading visible={loading} text="Verifying doctor identity..." />
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: 'transparent',
   },
   keyboardView: {
     flex: 1,
@@ -131,27 +140,22 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(226, 232, 240, 0.5)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.25)',
   },
   skipPillAbs: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(226, 232, 240, 0.6)',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 6,
+    borderColor: 'rgba(255,255,255,0.25)',
   },
   skipPillText: {
-    color: COLORS.primary,
+    color: '#FFFFFF',
     fontWeight: '700',
     fontSize: SIZES.font,
   },
@@ -192,11 +196,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
   },
   dividerText: {
     paddingHorizontal: 16,
-    color: COLORS.textSecondary,
+    color: COLORS.textTertiary,
     fontSize: SIZES.font,
     fontWeight: '600',
   },
@@ -211,17 +215,14 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderRadius: 24,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.card,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
     padding: 6,
-    shadowColor: '#000000',
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 6,
+    ...SHADOWS.soft,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: COLORS.cardBorder,
   },
   illustration: {
     width: '100%',

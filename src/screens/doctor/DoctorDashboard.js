@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import GradientCard from '../../components/GradientCard';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const { width } = Dimensions.get('window');
@@ -42,7 +44,7 @@ const DoctorDashboard = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PremiumBackground safeArea={true} colors={['#0f172a', '#0c4a6e']}>
       {/* Premium Top Bar */}
       <View style={styles.topBar}>
         <View>
@@ -64,13 +66,14 @@ const DoctorDashboard = ({ navigation }) => {
         {/* Core Quick Stats Row */}
         <View style={styles.statsRow}>
           {stats.map((stat, i) => (
-            <View key={i} style={styles.statBox}>
-              <View style={[styles.statIconCircle, { backgroundColor: stat.color + '15' }]}>
-                <Ionicons name={stat.icon} size={20} color={stat.color} />
-              </View>
+            <LinearGradient 
+              key={i} 
+              colors={[`${stat.color}20`, `${stat.color}05`]} 
+              style={[styles.statBox, { borderColor: `${stat.color}40` }]}
+            >
               <Text style={styles.statValue}>{stat.value}</Text>
               <Text style={styles.statLabel}>{stat.label}</Text>
-            </View>
+            </LinearGradient>
           ))}
         </View>
 
@@ -162,7 +165,7 @@ const DoctorDashboard = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
@@ -177,20 +180,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingVertical: 16,
-    backgroundColor: COLORS.card,
-    borderBottomWidth: 1.2,
-    borderBottomColor: '#F1F5F9',
-    ...SHADOWS.soft,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.15)',
   },
   welcomeText: {
     fontSize: SIZES.font,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.75)',
     fontWeight: '600',
   },
   drName: {
     fontSize: SIZES.large,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
     marginTop: 2,
   },
   topActions: {
@@ -200,12 +201,11 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 12,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   notifBadge: {
     position: 'absolute',
@@ -224,17 +224,16 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: 32,
   },
   statBox: {
     width: (width - 72) / 3,
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card,
     padding: 16,
     alignItems: 'center',
-    ...SHADOWS.soft,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    ...SHADOWS.glass,
   },
   statIconCircle: {
     width: 40,
@@ -247,17 +246,17 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: SIZES.large,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
   },
   statLabel: {
     fontSize: 10,
     fontWeight: '700',
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.7)',
     marginTop: 4,
     textAlign: 'center',
   },
   aiCard: {
-    marginBottom: 28,
+    marginBottom: 36,
   },
   aiContent: {
     flexDirection: 'row',
@@ -282,21 +281,20 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   sectionTitle: {
     fontSize: SIZES.medium + 2,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 28,
+    marginBottom: 36,
   },
   gridCard: {
     width: (width - 64) / 2,
@@ -333,13 +331,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card - 4,
     padding: 16,
-    marginBottom: 12,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
-    ...SHADOWS.soft,
+    marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    ...SHADOWS.glass,
   },
   activityInfo: {
     flex: 1,
@@ -347,11 +344,11 @@ const styles = StyleSheet.create({
   activityName: {
     fontSize: SIZES.font + 1,
     fontWeight: '800',
-    color: COLORS.text,
+    color: '#FFFFFF',
   },
   activityType: {
     fontSize: SIZES.small,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.65)',
     marginTop: 4,
   },
   badge: {
@@ -385,13 +382,13 @@ const styles = StyleSheet.create({
   bottomBar: {
     flexDirection: 'row',
     height: 72,
-    backgroundColor: COLORS.card,
+    backgroundColor: 'rgba(7,27,52,0.85)',
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 20,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   tabItem: {
     alignItems: 'center',
@@ -399,12 +396,12 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 10,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.55)',
     fontWeight: '600',
     marginTop: 4,
   },
   tabLabelActive: {
-    color: COLORS.primary,
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   addTabCircle: {

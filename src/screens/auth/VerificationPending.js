@@ -34,7 +34,7 @@ const VerificationPending = ({ navigation }) => {
           </View>
         </Animated.View>
 
-        <GradientCard colors={['#FFFFFF', '#F1F5F9']} style={styles.card}>
+        <GradientCard colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.03)']} style={styles.card}>
           <Text style={styles.title}>Verification Pending</Text>
           <Text style={styles.desc}>
             Your credentials and medical registration number are currently being verified against secure medical councils.
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,

@@ -6,18 +6,26 @@ import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
 import SafeImage from '../../components/SafeImage';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const OrganizationLogin = ({ navigation }) => {
   const [clinicId, setClinicId] = useState('');
   const [passcode, setPasscode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleLogin = () => {
-    if (!clinicId || !passcode) {
-      Alert.alert('Incomplete Form', 'Please enter your clinical ID and security passcode.');
+    const newErrors = {};
+    if (!clinicId) newErrors.clinicId = 'Clinical ID is required';
+    if (!passcode) newErrors.passcode = 'Passcode is required';
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+    
+    setErrors({});
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -26,7 +34,7 @@ const OrganizationLogin = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PremiumBackground safeArea={false} colors={['#0f172a', '#312e81']}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -69,17 +77,19 @@ const OrganizationLogin = ({ navigation }) => {
               label="CLINICAL REGISTRY ID / EMAIL"
               placeholder="e.g. SMC-2026-WILSON"
               value={clinicId}
-              onChangeText={setClinicId}
+              onChangeText={(text) => { setClinicId(text); setErrors(prev => ({...prev, clinicId: null})); }}
               iconName="business-outline"
+              error={errors.clinicId}
             />
 
             <PremiumInput
               label="SECURITY ACCESS PASSCODE"
               placeholder="••••••••"
               value={passcode}
-              onChangeText={setPasscode}
+              onChangeText={(text) => { setPasscode(text); setErrors(prev => ({...prev, passcode: null})); }}
               secureTextEntry={true}
               iconName="key-outline"
+              error={errors.passcode}
             />
 
             <TouchableOpacity 
@@ -109,7 +119,7 @@ const OrganizationLogin = ({ navigation }) => {
       </KeyboardAvoidingView>
 
       <Loading visible={isLoading} text="Establishing clinical registry tunnel..." />
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
@@ -136,27 +146,22 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(226, 232, 240, 0.5)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   skipBtnAbs: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(226, 232, 240, 0.6)',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 6,
+    borderColor: COLORS.border,
   },
   skipBtnText: {
-    color: COLORS.primary,
+    color: COLORS.text,
     fontWeight: '700',
     fontSize: SIZES.font,
   },
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    ...SHADOWS.premium,
+    ...SHADOWS.soft,
   },
   title: {
     fontSize: SIZES.title - 4,
@@ -189,8 +194,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card,
     padding: 24,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
     ...SHADOWS.soft,
     marginBottom: 24,
   },
@@ -232,17 +237,14 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderRadius: 24,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.card,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
     padding: 6,
-    shadowColor: '#000000',
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 6,
+    ...SHADOWS.soft,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: COLORS.cardBorder,
   },
   illustration: {
     width: '100%',

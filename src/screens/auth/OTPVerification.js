@@ -5,7 +5,8 @@ import Header from '../../components/Header';
 import OTPInput from '../../components/OTPInput';
 import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
-import { COLORS, SIZES } from '../../styles/theme';
+
+import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
 
 const OTPVerification = ({ navigation, route }) => {
   const { type } = route.params || {};
@@ -34,7 +35,7 @@ const OTPVerification = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Secure Access Verification" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Secure Access Verification" onBackPress={() => navigation.goBack()} />
       <View style={styles.content}>
         <View style={styles.illustrationWrapper}>
           <View style={styles.illustrationContainer}>

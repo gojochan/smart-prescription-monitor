@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
 
 const DoctorSignup = ({ navigation }) => {
@@ -22,7 +23,7 @@ const DoctorSignup = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PremiumBackground safeArea={false}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -102,14 +103,14 @@ const DoctorSignup = ({ navigation }) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: 'transparent',
   },
   keyboardView: {
     flex: 1,
@@ -122,10 +123,11 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(226, 232, 240, 0.5)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   header: {
     marginBottom: SIZES.large,
@@ -134,19 +136,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: SIZES.title,
     fontWeight: 'bold',
-    color: COLORS.text,
+    color: '#FFFFFF',
     marginBottom: SIZES.base,
   },
   subtitle: {
     fontSize: SIZES.medium,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.75)',
   },
   formContainer: {
     flex: 1,
-    backgroundColor: COLORS.card,
     padding: SIZES.large,
     borderRadius: BORDER_RADIUS.card,
-    ...SHADOWS.premium,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    ...SHADOWS.glass,
   },
   buttonContainer: {
     marginTop: SIZES.large,
@@ -157,7 +160,7 @@ const styles = StyleSheet.create({
     marginTop: SIZES.large,
   },
   loginText: {
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.75)',
     fontSize: SIZES.font,
   },
   loginLink: {

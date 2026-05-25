@@ -20,7 +20,7 @@ const CompletedMedicines = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Taken Medicines" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Taken Medicines" onBackPress={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {medicines.length === 0 ? (
           <View style={styles.emptyState}>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     alignItems: 'center',
     justifyContent: 'center',
     ...SHADOWS.soft,

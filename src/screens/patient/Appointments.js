@@ -89,7 +89,7 @@ const Appointments = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="My Appointments" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="My Appointments" onBackPress={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Navigation Tabs */}
@@ -249,7 +249,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F0F9FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -292,7 +291,6 @@ const styles = StyleSheet.create({
   },
   appDivider: {
     height: 1.2,
-    backgroundColor: '#F8FAFC',
     marginVertical: 14,
   },
   appDetailsRow: {
@@ -421,14 +419,12 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.2,
     borderColor: '#E2E8F0',
   },
   sheetDrCard: {
-    backgroundColor: '#F8FAFC',
     borderRadius: 12,
     padding: 14,
     borderWidth: 1.2,
@@ -461,7 +457,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 10,
-    backgroundColor: '#F1F5F9',
     marginRight: 10,
     marginBottom: 10,
     borderWidth: 1.2,

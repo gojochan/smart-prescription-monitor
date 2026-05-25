@@ -54,14 +54,14 @@ const PatientHistory = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Patient Medical timelines" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Patient Medical timelines" onBackPress={() => navigation.goBack()} />
       <View style={styles.content}>
         {/* Premium search bar */}
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color={COLORS.textSecondary} style={styles.searchIcon} />
           <TextInput
             placeholder="Search patient records database..."
-            placeholderTextColor={COLORS.textSecondary}
+            placeholderTextColor="#E5E7EB"
             value={search}
             onChangeText={setSearch}
             style={styles.searchInput}
@@ -92,14 +92,17 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
-    borderRadius: BORDER_RADIUS.input,
-    paddingHorizontal: 16,
-    height: 54,
+    backgroundColor: 'rgba(15,23,42,0.20)',
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    height: 56,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderColor: 'rgba(255,255,255,0.25)',
     marginBottom: 24,
-    ...SHADOWS.soft,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   searchIcon: {
     marginRight: 12,
@@ -107,7 +110,8 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: SIZES.medium,
-    color: COLORS.text,
+    color: '#FFFFFF',
+    fontWeight: '500',
   },
   listContent: {
     paddingBottom: 20,
@@ -154,7 +158,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
     marginVertical: 16,
   },
   diagnosesSection: {
@@ -171,7 +174,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   chip: {
-    backgroundColor: '#F1F5F9',
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 4,

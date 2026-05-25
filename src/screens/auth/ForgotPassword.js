@@ -28,7 +28,7 @@ const ForgotPassword = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Password Recovery" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Password Recovery" onBackPress={() => navigation.goBack()} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}

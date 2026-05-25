@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const DoctorVerification = ({ navigation }) => {
@@ -38,8 +39,8 @@ const DoctorVerification = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header title="Practitioner Verification" onBackPress={() => navigation.goBack()} />
+    <PremiumBackground safeArea={true}>
+      <Header onSkipPress={() => console.log("Skip")} title="Practitioner Verification" onBackPress={() => navigation.goBack()} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -158,14 +159,14 @@ const DoctorVerification = ({ navigation }) => {
       </KeyboardAvoidingView>
 
       <Loading visible={loading} text="Uploading credentials packet..." />
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: 'transparent',
   },
   keyboardView: {
     flex: 1,
@@ -180,12 +181,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: SIZES.extraLarge,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: SIZES.medium,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.75)',
     lineHeight: 22,
   },
   form: {
@@ -197,23 +198,21 @@ const styles = StyleSheet.create({
   uploadHeading: {
     fontSize: SIZES.medium,
     fontWeight: '700',
-    color: COLORS.text,
+    color: 'rgba(255,255,255,0.9)',
     marginBottom: 12,
     paddingLeft: 4,
   },
   uploadCard: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card,
     padding: 16,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderColor: 'rgba(255,255,255,0.2)',
     borderStyle: 'dashed',
     marginBottom: 16,
-    ...SHADOWS.soft,
   },
   uploadCardActive: {
     borderColor: COLORS.secondary,
-    backgroundColor: 'rgba(16, 185, 129, 0.04)',
+    backgroundColor: 'rgba(16,185,129,0.2)',
     borderStyle: 'solid',
   },
   uploadRow: {
@@ -227,11 +226,11 @@ const styles = StyleSheet.create({
   uploadTitle: {
     fontSize: SIZES.font + 1,
     fontWeight: '700',
-    color: COLORS.text,
+    color: '#FFFFFF',
   },
   uploadDesc: {
     fontSize: SIZES.small,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.65)',
     marginTop: 2,
   },
   submitBtn: {

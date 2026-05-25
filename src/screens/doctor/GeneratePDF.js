@@ -3,10 +3,18 @@ import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Ale
 import { Ionicons } from '@expo/vector-icons';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
+
+const defaultPatient = {
+  patientName: 'John Doe',
+  age: '30',
+  gender: 'Male',
+  diagnosis: 'General Checkup',
+  code: 'REC-' + Math.floor(100000 + Math.random() * 900000),
+};
 
 const GeneratePDF = ({ route, navigation }) => {
   const { prescriptionId, patientData } = route.params || {};
@@ -159,7 +167,7 @@ const GeneratePDF = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header 
+      <Header onSkipPress={() => console.log("Skip")} 
         title="PDF Preview" 
         onBackPress={() => navigation.goBack()} 
         rightComponent={
@@ -332,7 +340,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     borderWidth: 1.2,
     borderColor: '#E2E8F0',
   },
@@ -341,7 +349,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   paper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     borderRadius: 16,
     padding: 24,
     minHeight: 650,
@@ -377,7 +385,6 @@ const styles = StyleSheet.create({
   },
   spmLogo: {
     alignItems: 'center',
-    backgroundColor: '#F0F9FF',
     padding: 10,
     borderRadius: 12,
     borderWidth: 1,
@@ -420,7 +427,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: '#FFFBEB',
     borderWidth: 1.2,
     borderColor: '#FEF3C7',
     alignItems: 'center',
@@ -434,11 +440,9 @@ const styles = StyleSheet.create({
   },
   lightDivider: {
     height: 1.2,
-    backgroundColor: '#F1F5F9',
     marginVertical: 14,
   },
   patientGrid: {
-    backgroundColor: '#F8FAFC',
     borderRadius: 12,
     padding: 14,
     borderWidth: 1,
@@ -510,7 +514,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   medDetailChip: {
-    backgroundColor: '#F1F5F9',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -536,7 +539,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginRight: 16,
-    backgroundColor: '#F8FAFC',
     padding: 8,
     borderRadius: 8,
     borderWidth: 1,
@@ -638,7 +640,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   shareBtn: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     width: 52,
     borderWidth: 1.2,
     borderColor: '#CBD5E1',

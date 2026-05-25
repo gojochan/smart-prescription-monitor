@@ -28,7 +28,7 @@ const MedicineReminderHistory = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Reminder History" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Reminder History" onBackPress={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {history.length === 0 ? (
           <View style={styles.emptyState}>

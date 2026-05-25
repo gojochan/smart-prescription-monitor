@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import GradientCard from '../../components/GradientCard';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 import { getUpcomingReminders, markReminderTaken } from '../../utils/storage';
+import { scheduleTestNotification } from '../../utils/notifications';
 
 const { width } = Dimensions.get('window');
 
@@ -31,6 +33,13 @@ const PatientDashboard = ({ navigation }) => {
     loadReminders();
   };
 
+  const handleTestNotification = async () => {
+    const id = await scheduleTestNotification();
+    if (id) {
+      // Notification scheduled
+    }
+  };
+
   const quickStats = [
     { label: 'Weekly Adherence', value: '94%', icon: 'flame', color: COLORS.secondary },
     { label: 'Active Pills', value: '4 Daily', icon: 'medical', color: COLORS.primary },
@@ -47,7 +56,7 @@ const PatientDashboard = ({ navigation }) => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PremiumBackground safeArea={true} colors={['#0f172a', '#064e3b']}>
       {/* Top Bar */}
       <View style={styles.topBar}>
         <View>
@@ -65,13 +74,14 @@ const PatientDashboard = ({ navigation }) => {
         {/* Core Quick Stats Row */}
         <View style={styles.statsRow}>
           {quickStats.map((stat, i) => (
-            <View key={i} style={styles.statBox}>
-              <View style={[styles.statIconCircle, { backgroundColor: stat.color + '15' }]}>
-                <Ionicons name={stat.icon} size={20} color={stat.color} />
-              </View>
+            <LinearGradient 
+              key={i} 
+              colors={[`${stat.color}20`, `${stat.color}05`]} 
+              style={[styles.statBox, { borderColor: `${stat.color}40` }]}
+            >
               <Text style={styles.statValue}>{stat.value}</Text>
               <Text style={styles.statLabel}>{stat.label}</Text>
-            </View>
+            </LinearGradient>
           ))}
         </View>
 
@@ -91,7 +101,13 @@ const PatientDashboard = ({ navigation }) => {
         </GradientCard>
 
         {/* Next Dose Alert Widget */}
-        <Text style={styles.sectionTitle}>Pill Reminders Today</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Pill Reminders Today</Text>
+          <TouchableOpacity onPress={handleTestNotification} style={styles.testBtn} activeOpacity={0.7}>
+            <Ionicons name="alarm-outline" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
+            <Text style={styles.testBtnText}>Test 10s Alarm</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.reminderCard}>
           {upcomingDoses.length === 0 ? (
             <Text style={{ textAlign: 'center', color: COLORS.textSecondary, padding: 10 }}>No upcoming doses currently.</Text>
@@ -224,14 +240,14 @@ const PatientDashboard = ({ navigation }) => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: 'transparent',
   },
   topBar: {
     flexDirection: 'row',
@@ -239,20 +255,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingVertical: 16,
-    backgroundColor: COLORS.card,
-    borderBottomWidth: 1.2,
-    borderBottomColor: '#F1F5F9',
-    ...SHADOWS.soft,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.15)',
   },
   welcomeText: {
     fontSize: SIZES.font,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.75)',
     fontWeight: '600',
   },
   patientName: {
     fontSize: SIZES.large,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
     marginTop: 2,
   },
   avatarBtn: {
@@ -278,17 +292,16 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: 32,
   },
   statBox: {
     width: (width - 72) / 3,
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card,
     padding: 16,
     alignItems: 'center',
-    ...SHADOWS.soft,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    ...SHADOWS.glass,
   },
   statIconCircle: {
     width: 40,
@@ -301,17 +314,17 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: SIZES.large - 2,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
   },
   statLabel: {
     fontSize: 10,
     fontWeight: '700',
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.7)',
     marginTop: 4,
     textAlign: 'center',
   },
   qrCard: {
-    marginBottom: 28,
+    marginBottom: 36,
   },
   qrContent: {
     flexDirection: 'row',
@@ -336,31 +349,29 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   sectionTitle: {
     fontSize: SIZES.medium + 2,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   reminderCard: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card,
     padding: 20,
-    marginBottom: 28,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
-    ...SHADOWS.soft,
+    marginBottom: 36,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    ...SHADOWS.glass,
   },
   doseItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
-    borderBottomWidth: 1.2,
-    borderBottomColor: '#F8FAFC',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
   noBorder: {
     borderBottomWidth: 0,
@@ -370,7 +381,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#F0F9FF',
+    backgroundColor: 'rgba(14,165,233,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
@@ -381,16 +392,16 @@ const styles = StyleSheet.create({
   doseMedName: {
     fontSize: SIZES.font + 1,
     fontWeight: '800',
-    color: COLORS.text,
+    color: '#FFFFFF',
   },
   doseStrength: {
     fontSize: SIZES.small,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.6)',
     fontWeight: '600',
   },
   doseSubText: {
     fontSize: 11,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.6)',
     marginTop: 4,
     fontWeight: '600',
   },
@@ -410,7 +421,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 28,
+    marginBottom: 36,
   },
   gridCard: {
     width: (width - 64) / 2,
@@ -439,13 +450,13 @@ const styles = StyleSheet.create({
   bottomBar: {
     flexDirection: 'row',
     height: 72,
-    backgroundColor: COLORS.card,
+    backgroundColor: 'rgba(7,27,52,0.85)',
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 20,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   tabItem: {
     alignItems: 'center',
@@ -453,12 +464,12 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 10,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.55)',
     fontWeight: '600',
     marginTop: 4,
   },
   tabLabelActive: {
-    color: COLORS.primary,
+    color: '#FFFFFF',
     fontWeight: '700',
   },
   addTabCircle: {
@@ -495,7 +506,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.2,
@@ -520,7 +530,7 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     padding: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: '#CBD5E1',
@@ -544,10 +554,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 6,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
   },
   patientIDCard: {
-    backgroundColor: '#F8FAFC',
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 12,
@@ -578,6 +587,20 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontWeight: '700',
     marginLeft: 6,
+  },
+  testBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  testBtnText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });
 

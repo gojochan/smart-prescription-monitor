@@ -78,7 +78,7 @@ const Notifications = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header 
+      <Header onSkipPress={() => console.log("Skip")} 
         title="Notifications" 
         onBackPress={() => navigation.goBack()} 
         rightComponent={
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     borderWidth: 1.2,
     borderColor: '#E2E8F0',
   },
@@ -136,8 +136,7 @@ const styles = StyleSheet.create({
     ...SHADOWS.soft,
   },
   unreadCard: {
-    borderColor: 'rgba(14, 165, 233, 0.15)',
-    backgroundColor: '#F0F9FF', // Subtle blue background for unread items
+    borderColor: 'rgba(14, 165, 233, 0.15)', // Subtle blue background for unread items
   },
   iconCircle: {
     width: 44,

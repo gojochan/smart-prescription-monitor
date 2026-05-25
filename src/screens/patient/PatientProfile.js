@@ -77,7 +77,7 @@ const PatientProfile = ({ navigation }) => {
           <View style={styles.vitalsRow}>
             {vitals.map((v, idx) => (
               <View key={idx} style={styles.vitalCol}>
-                <View style={[styles.vitalIconCircle, { backgroundColor: 'rgba(255,255,255,0.08)' }]}>
+                <View style={[styles.vitalIconCircle, { }]}>
                   <Ionicons name={v.icon} size={18} color={v.color} />
                 </View>
                 <Text style={styles.vitalVal}>{v.value}</Text>
@@ -203,7 +203,6 @@ const styles = StyleSheet.create({
   },
   cardStatsDivider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     marginVertical: 20,
   },
   vitalsRow: {
@@ -256,7 +255,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
@@ -284,7 +282,6 @@ const styles = StyleSheet.create({
   },
   credDivider: {
     height: 1.2,
-    backgroundColor: '#F1F5F9',
     marginVertical: 14,
   },
   optionsList: {
@@ -308,7 +305,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,

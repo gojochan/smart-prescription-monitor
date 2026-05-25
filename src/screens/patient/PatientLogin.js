@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
 import SafeImage from '../../components/SafeImage';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const PatientLogin = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Incomplete Form', 'Please enter your account email and security password.');
+    const newErrors = {};
+    if (!email) newErrors.email = 'Email address is required';
+    if (!password) newErrors.password = 'Password is required';
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+    
+    setErrors({});
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -26,7 +34,7 @@ const PatientLogin = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PremiumBackground safeArea={false} colors={['#0f172a', '#064e3b']}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -57,7 +65,7 @@ const PatientLogin = ({ navigation }) => {
 
           <View style={styles.heroSection}>
             <LinearGradient colors={[COLORS.secondary, '#059669']} style={styles.logoBadge}>
-              <Ionicons name="heart-pulse-outline" size={36} color="#FFFFFF" />
+              <Ionicons name="medkit-outline" size={36} color="#FFFFFF" />
             </LinearGradient>
             <Text style={styles.title}>Patient Portal</Text>
             <Text style={styles.subtitle}>Welcome back to Smart Prescription Monitor</Text>
@@ -69,18 +77,20 @@ const PatientLogin = ({ navigation }) => {
               label="EMAIL OR MOBILE NUMBER"
               placeholder="e.g. john.doe@gmail.com"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => { setEmail(text); setErrors(prev => ({...prev, email: null})); }}
               keyboardType="email-address"
               iconName="mail-outline"
+              error={errors.email}
             />
 
             <PremiumInput
               label="SECURITY PASSWORD"
               placeholder="••••••••"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(text) => { setPassword(text); setErrors(prev => ({...prev, password: null})); }}
               secureTextEntry={true}
               iconName="lock-closed-outline"
+              error={errors.password}
             />
 
             <TouchableOpacity 
@@ -108,16 +118,15 @@ const PatientLogin = ({ navigation }) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-
       <Loading visible={isLoading} text="Securing health records tunnel..." />
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: 'transparent',
   },
   keyboardView: {
     flex: 1,
@@ -137,27 +146,22 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(226, 232, 240, 0.5)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   skipBtnAbs: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(226, 232, 240, 0.6)',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 6,
+    borderColor: COLORS.border,
   },
   skipBtnText: {
-    color: COLORS.secondary,
+    color: COLORS.text,
     fontWeight: '700',
     fontSize: SIZES.font,
   },
@@ -172,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    ...SHADOWS.premium,
+    ...SHADOWS.soft,
   },
   title: {
     fontSize: SIZES.title - 4,
@@ -187,13 +191,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   formCard: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.card,
     padding: 24,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    backgroundColor: COLORS.card,
     ...SHADOWS.soft,
-    marginBottom: 24,
+    marginBottom: 32,
   },
   forgotBtn: {
     alignSelf: 'flex-end',
@@ -233,17 +237,14 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderRadius: 24,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.card,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
     padding: 6,
-    shadowColor: '#000000',
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 6,
+    ...SHADOWS.soft,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: COLORS.cardBorder,
   },
   illustration: {
     width: '100%',

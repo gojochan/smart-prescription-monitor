@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../../components/Header';
-import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
+import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
 
 const { width } = Dimensions.get('window');
 
@@ -14,14 +14,14 @@ const Analytics = ({ navigation }) => {
 
   const metrics = [
     { label: 'Total Prescriptions', value: '1,248', change: '+12.4%', icon: 'document-text', color: COLORS.primary },
-    { label: 'Adherence Rating', value: '92.4%', change: '+3.1%', icon: 'checkmark-seal', color: COLORS.secondary },
-    { label: 'Stock Warning Items', value: '4', change: '-2 items', icon: 'warning', color: COLORS.danger },
+    { label: 'Adherence Rating', value: '92.4%', change: '+3.1%', icon: 'checkmark-circle', color: COLORS.success },
+    { label: 'Stock Warning', value: '4 items', change: '-2 items', icon: 'warning', color: COLORS.warning },
   ];
 
   const topMeds = [
     { name: 'Telmisartan 40mg', count: 320, pct: '38%', color: COLORS.primary },
     { name: 'Amlodipine 5mg', count: 280, pct: '30%', color: COLORS.secondary },
-    { name: 'Atorvastatin 10mg', count: 180, pct: '18%', color: COLORS.dark },
+    { name: 'Atorvastatin 10mg', count: 180, pct: '18%', color: '#94A3B8' },
     { name: 'Metformin 500mg', count: 120, pct: '14%', color: COLORS.warning },
   ];
 
@@ -37,7 +37,12 @@ const Analytics = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Facility Analytics" onBackPress={() => navigation.goBack()} />
+      <Header 
+        title="Facility Analytics" 
+        onBackPress={() => navigation.goBack()}
+        onSkipPress={() => console.log('Skip')}
+        dark={true}
+      />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Timeline Selector */}
@@ -49,6 +54,7 @@ const Analytics = ({ navigation }) => {
                 key={t}
                 onPress={() => setSelectedTimeline(t)}
                 style={[styles.timeBtn, isSelected && styles.timeBtnActive]}
+                activeOpacity={0.8}
               >
                 <Text style={[styles.timeBtnText, isSelected && styles.timeBtnTextActive]}>{t}</Text>
               </TouchableOpacity>
@@ -59,12 +65,12 @@ const Analytics = ({ navigation }) => {
         {/* Top level stats */}
         <View style={styles.metricsGrid}>
           {metrics.map((m, idx) => (
-            <View key={idx} style={styles.metricCard}>
+            <View key={idx} style={[styles.metricCard, { width: metrics.length === 3 && idx === 2 ? '100%' : (width - 64) / 2 }]}>
               <View style={styles.metricHeader}>
-                <View style={[styles.iconCircle, { backgroundColor: m.color + '12' }]}>
+                <View style={[styles.iconCircle, { backgroundColor: m.color + '20', borderColor: m.color + '40' }]}>
                   <Ionicons name={m.icon} size={20} color={m.color} />
                 </View>
-                <Text style={[styles.changeText, m.color === COLORS.danger ? styles.textRed : styles.textGreen]}>
+                <Text style={[styles.changeText, m.color === COLORS.warning ? styles.textWarning : styles.textGreen]}>
                   {m.change}
                 </Text>
               </View>
@@ -82,7 +88,7 @@ const Analytics = ({ navigation }) => {
               <View key={idx} style={styles.chartBarCol}>
                 <View style={styles.barBack}>
                   <LinearGradient 
-                    colors={[COLORS.secondary, '#059669']} 
+                    colors={COLORS.accentGradient} 
                     style={[styles.barFill, { height: `${cr.rate}%` }]} 
                   />
                 </View>
@@ -93,7 +99,7 @@ const Analytics = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Top Medications prescribed list with pct indicators */}
+        {/* Top Medications */}
         <Text style={styles.sectionTitle}>Top Prescribed Drug Classes</Text>
         <View style={styles.medCard}>
           {topMeds.map((med, idx) => (
@@ -102,7 +108,6 @@ const Analytics = ({ navigation }) => {
                 <Text style={styles.medName}>{med.name}</Text>
                 <Text style={styles.medCount}>{med.count} RXs ({med.pct})</Text>
               </View>
-              {/* Custom CSS Bar Fill */}
               <View style={styles.trackBar}>
                 <View style={[styles.fillBar, { width: med.pct, backgroundColor: med.color }]} />
               </View>
@@ -110,9 +115,6 @@ const Analytics = ({ navigation }) => {
           ))}
         </View>
 
-        <Text style={styles.footerLegal}>
-          Information gathered corresponds strictly to clinical activity recorded inside Smart Medical Center registry databases.
-        </Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -121,150 +123,153 @@ const Analytics = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.dark,
   },
   scrollContent: {
-    padding: 24,
+    padding: SIZES.lg,
     paddingBottom: 40,
   },
   timeStrip: {
     flexDirection: 'row',
-    backgroundColor: COLORS.card,
-    borderRadius: 14,
+    backgroundColor: COLORS.glass,
+    borderRadius: BORDER_RADIUS.md,
     padding: 4,
-    borderWidth: 1.2,
-    borderColor: '#E2E8F0',
-    marginBottom: 24,
-    ...SHADOWS.soft,
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+    marginBottom: SIZES.xl,
+    ...SHADOWS.glass,
   },
   timeBtn: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: SIZES.sm,
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: BORDER_RADIUS.sm,
   },
   timeBtnActive: {
     backgroundColor: COLORS.primary,
+    ...SHADOWS.glow,
   },
   timeBtnText: {
-    fontSize: SIZES.font,
-    fontWeight: '800',
+    fontSize: SIZES.fontMd,
+    fontWeight: '700',
     color: COLORS.textSecondary,
   },
   timeBtnTextActive: {
-    color: '#FFFFFF',
+    color: COLORS.dark,
   },
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: SIZES.xl,
   },
   metricCard: {
-    width: (width - 64) / 2,
-    backgroundColor: COLORS.card,
-    borderRadius: BORDER_RADIUS.card,
-    padding: 16,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
-    ...SHADOWS.soft,
-    marginBottom: 16,
+    backgroundColor: COLORS.glass,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SIZES.md,
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+    ...SHADOWS.glass,
+    marginBottom: SIZES.md,
   },
   metricHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: SIZES.md,
   },
   iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: BORDER_RADIUS.sm,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
   },
   changeText: {
-    fontSize: 11,
+    fontSize: SIZES.fontSm,
     fontWeight: '800',
   },
   textGreen: {
-    color: COLORS.secondary,
+    color: COLORS.success,
   },
-  textRed: {
-    color: COLORS.danger,
+  textWarning: {
+    color: COLORS.warning,
   },
   metricVal: {
-    fontSize: SIZES.large,
+    fontSize: SIZES.fontXl,
     fontWeight: '900',
     color: COLORS.text,
+    letterSpacing: 0.5,
   },
   metricLbl: {
-    fontSize: 10,
-    fontWeight: '700',
+    fontSize: SIZES.fontSm,
+    fontWeight: '600',
     color: COLORS.textSecondary,
     marginTop: 4,
   },
   sectionTitle: {
-    fontSize: SIZES.medium + 1,
-    fontWeight: '900',
+    fontSize: SIZES.fontLg,
+    fontWeight: '800',
     color: COLORS.text,
-    marginBottom: 14,
+    marginBottom: SIZES.md,
+    letterSpacing: 0.5,
   },
   chartCard: {
-    backgroundColor: COLORS.card,
-    borderRadius: BORDER_RADIUS.card,
-    padding: 20,
-    marginBottom: 28,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
-    ...SHADOWS.soft,
+    backgroundColor: COLORS.glass,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SIZES.lg,
+    marginBottom: SIZES.xl,
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+    ...SHADOWS.glass,
   },
   chartBarRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     height: 180,
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
   },
   chartBarCol: {
     alignItems: 'center',
     width: (width - 128) / 7,
   },
   barBack: {
-    height: 120,
-    width: 10,
-    backgroundColor: '#F1F5F9',
-    borderRadius: 5,
+    height: 140,
+    width: 14,
+    backgroundColor: COLORS.glassLight,
+    borderRadius: 7,
     justifyContent: 'flex-end',
     overflow: 'hidden',
   },
   barFill: {
     width: '100%',
-    borderRadius: 5,
+    borderRadius: 7,
   },
   barRateText: {
-    fontSize: 8,
+    fontSize: SIZES.fontSm - 2,
     fontWeight: '800',
     color: COLORS.text,
-    marginTop: 6,
+    marginTop: 8,
   },
   barDayText: {
-    fontSize: 9,
+    fontSize: SIZES.fontSm - 1,
     fontWeight: '700',
     color: COLORS.textSecondary,
     marginTop: 4,
   },
   medCard: {
-    backgroundColor: COLORS.card,
-    borderRadius: BORDER_RADIUS.card,
-    padding: 20,
-    marginBottom: 28,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
-    ...SHADOWS.soft,
+    backgroundColor: COLORS.glass,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SIZES.lg,
+    marginBottom: SIZES.xl,
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+    ...SHADOWS.glass,
   },
   medItem: {
-    marginBottom: 16,
+    marginBottom: SIZES.md,
   },
   medHeaderRow: {
     flexDirection: 'row',
@@ -273,32 +278,24 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   medName: {
-    fontSize: SIZES.font,
-    fontWeight: '800',
+    fontSize: SIZES.fontMd,
+    fontWeight: '700',
     color: COLORS.text,
   },
   medCount: {
-    fontSize: 11,
-    fontWeight: '700',
+    fontSize: SIZES.fontSm,
+    fontWeight: '600',
     color: COLORS.textSecondary,
   },
   trackBar: {
     height: 8,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: COLORS.glassLight,
     borderRadius: 4,
     overflow: 'hidden',
   },
   fillBar: {
     height: '100%',
     borderRadius: 4,
-  },
-  footerLegal: {
-    fontSize: 10,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    lineHeight: 16,
-    fontWeight: '600',
-    paddingHorizontal: 12,
   },
 });
 

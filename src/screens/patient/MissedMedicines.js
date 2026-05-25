@@ -20,7 +20,7 @@ const MissedMedicines = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Missed Doses" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Missed Doses" onBackPress={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {medicines.length === 0 ? (
           <View style={styles.emptyState}>
@@ -31,7 +31,7 @@ const MissedMedicines = ({ navigation }) => {
           medicines.map((item, index) => {
             const timeObj = new Date(item.missedAt);
             return (
-              <GradientCard key={index} colors={['#FEF2F2', '#FEE2E2']} style={styles.card}>
+              <GradientCard key={index} colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.03)']} style={styles.card}>
                 <View style={styles.row}>
                   <View style={styles.iconCircle}>
                     <Ionicons name="close" size={24} color={COLORS.danger} />
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     alignItems: 'center',
     justifyContent: 'center',
     ...SHADOWS.soft,

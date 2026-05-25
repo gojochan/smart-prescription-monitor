@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Auth & General Flow
@@ -55,10 +56,11 @@ const AppNavigator = () => {
       initialRouteName="SplashScreen"
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
+        presentation: 'modal',
+        animation: 'slide_from_bottom',
       }}
     >
-      {/* General Setup & Auth */}
+      {/* ========== AUTHENTICATION FLOW ========== */}
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="Onboarding" component={Onboarding} />
       <Stack.Screen name="RoleSelection" component={RoleSelection} />
@@ -66,7 +68,7 @@ const AppNavigator = () => {
       <Stack.Screen name="OTPVerification" component={OTPVerification} />
       <Stack.Screen name="VerificationPending" component={VerificationPending} />
 
-      {/* Doctor Module */}
+      {/* ========== DOCTOR FLOW ========== */}
       <Stack.Screen name="DoctorLogin" component={DoctorLogin} />
       <Stack.Screen name="DoctorSignup" component={DoctorSignup} />
       <Stack.Screen name="DoctorVerification" component={DoctorVerification} />
@@ -79,7 +81,7 @@ const AppNavigator = () => {
       <Stack.Screen name="DoctorNotifications" component={Notifications} />
       <Stack.Screen name="DoctorSettings" component={Settings} />
 
-      {/* Patient Module */}
+      {/* ========== PATIENT FLOW ========== */}
       <Stack.Screen name="PatientLogin" component={PatientLogin} />
       <Stack.Screen name="PatientSignup" component={PatientSignup} />
       <Stack.Screen name="PatientDashboard" component={PatientDashboard} />
@@ -92,7 +94,7 @@ const AppNavigator = () => {
       <Stack.Screen name="MissedMedicines" component={MissedMedicines} />
       <Stack.Screen name="MedicineReminderHistory" component={MedicineReminderHistory} />
 
-      {/* Organization Module */}
+      {/* ========== ORGANIZATION FLOW ========== */}
       <Stack.Screen name="OrganizationRegister" component={OrganizationRegister} />
       <Stack.Screen name="OrganizationLogin" component={OrganizationLogin} />
       <Stack.Screen name="OrganizationDashboard" component={OrganizationDashboard} />
@@ -100,7 +102,7 @@ const AppNavigator = () => {
       <Stack.Screen name="Analytics" component={Analytics} />
       <Stack.Screen name="ManageMedicines" component={ManageMedicines} />
 
-      {/* Admin Module */}
+      {/* ========== ADMIN FLOW ========== */}
       <Stack.Screen name="AdminLogin" component={AdminLogin} />
       <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
     </Stack.Navigator>

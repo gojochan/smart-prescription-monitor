@@ -32,7 +32,7 @@ const UpcomingSchedule = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Upcoming Schedule" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Upcoming Schedule" onBackPress={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {reminders.length === 0 ? (
           <View style={styles.emptyState}>
@@ -52,7 +52,7 @@ const UpcomingSchedule = ({ navigation }) => {
                   {index < reminders.length - 1 && <View style={styles.timeLineConnect} />}
                 </View>
                 
-                <GradientCard colors={['#FFFFFF', '#F8FAFC']} style={styles.reminderCard}>
+                <GradientCard colors={['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.03)']} style={styles.reminderCard}>
                   <View style={styles.cardHeader}>
                     <View style={styles.pillIcon}>
                       <Ionicons name="medical" size={20} color={COLORS.primary} />
@@ -190,7 +190,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   missedBtn: {
-    backgroundColor: '#FEE2E2',
   },
   missedBtnText: {
     color: COLORS.danger,

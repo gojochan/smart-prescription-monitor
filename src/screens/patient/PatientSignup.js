@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const PatientSignup = ({ navigation }) => {
@@ -32,7 +33,7 @@ const PatientSignup = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <PremiumBackground safeArea={false}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -114,16 +115,15 @@ const PatientSignup = ({ navigation }) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-
       {isLoading && <Loading visible={true} message="Creating secure patient container..." />}
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: 'transparent',
   },
   keyboardView: {
     flex: 1,
@@ -139,13 +139,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.card,
-    borderWidth: 1.2,
-    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
     position: 'absolute',
     top: 10,
     left: 24,
-    ...SHADOWS.soft,
   },
   heroSection: {
     alignItems: 'center',
@@ -164,22 +162,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: SIZES.title - 4,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
   },
   subtitle: {
     fontSize: 12,
     fontWeight: '700',
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.75)',
     marginTop: 6,
     textAlign: 'center',
   },
   formCard: {
-    backgroundColor: COLORS.card,
+    padding: SIZES.large,
     borderRadius: BORDER_RADIUS.card,
-    padding: 24,
-    borderWidth: 1.2,
-    borderColor: '#F1F5F9',
-    ...SHADOWS.soft,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    ...SHADOWS.glass,
     marginBottom: 24,
   },
   actionContainer: {
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
   },
   footerLabel: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.75)',
     fontWeight: '600',
   },
   footerAction: {

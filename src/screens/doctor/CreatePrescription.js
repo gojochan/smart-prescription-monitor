@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import GradientCard from '../../components/GradientCard';
 import Loading from '../../components/Loading';
+import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 import { savePrescription, saveUpcomingReminders } from '../../utils/storage';
 import { scheduleMedicineReminders } from '../../utils/notifications';
@@ -24,6 +25,8 @@ const CreatePrescription = ({ navigation }) => {
   const [medicine, setMedicine] = useState('');
   const [dosage, setDosage] = useState('');
   const [frequency, setFrequency] = useState('Once daily');
+  const [customFrequency, setCustomFrequency] = useState('');
+  const [customUnit, setCustomUnit] = useState('Hours'); // 'Hours' or 'Minutes'
   const [duration, setDuration] = useState('');
   const [instructions, setInstructions] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -38,6 +41,10 @@ const CreatePrescription = ({ navigation }) => {
     } else if (step === 2) {
       if (!medicine) {
         alert('Please enter at least the medicine name.');
+        return;
+      }
+      if (frequency === 'Custom' && !customFrequency) {
+        alert('Please specify the custom frequency.');
         return;
       }
       setStep(3);
@@ -55,6 +62,16 @@ const CreatePrescription = ({ navigation }) => {
   const handleGenerate = async () => {
     setLoading(true);
     
+    // Determine frequency text
+    let finalFrequency = frequency;
+    if (frequency === 'Custom') {
+      const val = parseInt(customFrequency, 10) || 1;
+      const unitLabel = customUnit === 'Minutes' 
+        ? (val === 1 ? 'minute' : 'minutes') 
+        : (val === 1 ? 'hour' : 'hours');
+      finalFrequency = `Every ${val} ${unitLabel}`;
+    }
+    
     const prescriptionData = {
       patientName,
       patientAge,
@@ -62,7 +79,7 @@ const CreatePrescription = ({ navigation }) => {
       diagnosis,
       medicine,
       dosage: dosage || '1 Tablet',
-      frequency: frequency || 'Once daily',
+      frequency: finalFrequency || 'Once daily',
       duration: duration || '1 day',
       instructions: instructions || 'No additional instructions',
       startTime: startTime || '09:00 AM',
@@ -83,8 +100,8 @@ const CreatePrescription = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header
+    <PremiumBackground safeArea={true}>
+      <Header onSkipPress={() => console.log("Skip")}
         title={`New Prescription (Step ${step}/3)`}
         onBackPress={handleBackStep}
       />
@@ -192,6 +209,39 @@ const CreatePrescription = ({ navigation }) => {
               ))}
             </View>
 
+            {frequency === 'Custom' && (
+              <View style={{ marginBottom: 20 }}>
+                <View style={styles.row}>
+                  <View style={{ flex: 1, marginRight: 12 }}>
+                    <PremiumInput
+                      label="Custom Interval Value"
+                      placeholder="e.g. 5"
+                      value={customFrequency}
+                      onChangeText={setCustomFrequency}
+                      keyboardType="numeric"
+                      iconName="repeat-outline"
+                    />
+                  </View>
+                  <View style={{ flex: 1.2 }}>
+                    <Text style={styles.dropdownLabel}>Time Unit</Text>
+                    <View style={styles.genderRow}>
+                      {['Hours', 'Minutes'].map((unit) => (
+                        <TouchableOpacity
+                          key={unit}
+                          onPress={() => setCustomUnit(unit)}
+                          style={[styles.genderBtn, customUnit === unit && styles.genderBtnActive]}
+                        >
+                          <Text style={[styles.genderBtnText, customUnit === unit && styles.genderBtnTextActive]}>
+                            {unit}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+
             <PremiumInput
               label="Duration (e.g., 5 days)"
               placeholder="e.g. 5 days"
@@ -242,7 +292,7 @@ const CreatePrescription = ({ navigation }) => {
           <View style={styles.formSection}>
             <Text style={styles.sectionHeading}>Confirm Prescription Details</Text>
             
-            <GradientCard colors={['#FFFFFF', '#F8FAFC']} style={styles.reviewCard}>
+            <GradientCard colors={['rgba(255,255,255,0.10)', 'rgba(255,255,255,0.05)']} style={styles.reviewCard}>
               <Text style={styles.reviewTitle}>Patient: <Text style={styles.reviewText}>{patientName} ({patientAge} / {patientGender})</Text></Text>
               <Text style={styles.reviewTitle}>Diagnosis: <Text style={styles.reviewText}>{diagnosis}</Text></Text>
               
@@ -250,7 +300,11 @@ const CreatePrescription = ({ navigation }) => {
               
               <Text style={styles.reviewTitle}>Rx Prescribed:</Text>
               <Text style={styles.medLabel}>{medicine}</Text>
-              <Text style={styles.medParams}>Dosage: {dosage || '1 Tablet'} • {frequency || 'Once daily'}</Text>
+              <Text style={styles.medParams}>
+                Dosage: {dosage || '1 Tablet'} • {frequency === 'Custom' 
+                  ? `Every ${customFrequency || '?'} ${customUnit.toLowerCase()}` 
+                  : (frequency || 'Once daily')}
+              </Text>
               <Text style={styles.medParams}>Duration: {duration || '1 day'}</Text>
               <Text style={styles.medParams}>Instructions: {instructions || 'No additional instructions'}</Text>
               <Text style={styles.medParams}>Start Time: {startTime || '09:00 AM'}</Text>
@@ -262,14 +316,14 @@ const CreatePrescription = ({ navigation }) => {
       </ScrollView>
 
       <Loading visible={loading} text="Compiling electronic signature & PDF..." />
-    </SafeAreaView>
+    </PremiumBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: 'transparent',
   },
   scrollContent: {
     padding: 24,
@@ -290,17 +344,19 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   stepDotActive: {
     backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
   },
   stepNum: {
     fontSize: SIZES.font,
     fontWeight: '700',
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.6)',
   },
   stepNumActive: {
     color: '#FFFFFF',
@@ -308,7 +364,6 @@ const styles = StyleSheet.create({
   stepConnector: {
     width: 60,
     height: 3,
-    backgroundColor: '#E2E8F0',
   },
   stepConnectorActive: {
     backgroundColor: COLORS.primary,
@@ -319,7 +374,7 @@ const styles = StyleSheet.create({
   sectionHeading: {
     fontSize: SIZES.large,
     fontWeight: '900',
-    color: COLORS.text,
+    color: '#FFFFFF',
     marginBottom: 20,
   },
   row: {
@@ -329,7 +384,7 @@ const styles = StyleSheet.create({
   },
   dropdownLabel: {
     fontSize: SIZES.font,
-    color: COLORS.text,
+    color: 'rgba(255,255,255,0.85)',
     fontWeight: '600',
     marginBottom: 10,
     paddingLeft: 4,
@@ -341,26 +396,30 @@ const styles = StyleSheet.create({
   },
   genderBtn: {
     flex: 1,
-    backgroundColor: COLORS.card,
-    borderRadius: BORDER_RADIUS.input,
+    borderRadius: 20,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderColor: 'rgba(255,255,255,0.25)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 6,
-    ...SHADOWS.soft,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   genderBtnActive: {
-    borderColor: COLORS.primary,
-    backgroundColor: 'rgba(14, 165, 233, 0.04)',
+    backgroundColor: '#60A5FA',
+    borderColor: '#93C5FD',
   },
   genderBtnText: {
     fontSize: SIZES.font,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.7)',
     fontWeight: '700',
   },
   genderBtnTextActive: {
-    color: COLORS.primary,
+    color: '#FFFFFF',
   },
   chipContainer: {
     flexDirection: 'row',
@@ -368,29 +427,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   chip: {
-    height: 40,
-    paddingHorizontal: 14,
-    borderRadius: BORDER_RADIUS.input - 4,
-    backgroundColor: COLORS.card,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
     marginBottom: 8,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
-    ...SHADOWS.soft,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   chipActive: {
-    borderColor: COLORS.primary,
-    backgroundColor: 'rgba(14, 165, 233, 0.04)',
+    backgroundColor: '#60A5FA',
+    borderColor: '#93C5FD',
   },
   chipText: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: 'rgba(255,255,255,0.7)',
     fontWeight: '700',
   },
   chipTextActive: {
-    color: COLORS.primary,
+    color: '#FFFFFF',
   },
   actionBtn: {
     marginTop: 30,
@@ -398,9 +459,9 @@ const styles = StyleSheet.create({
   },
   reviewCard: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 36,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
+    borderColor: 'rgba(255,255,255,0.25)',
   },
   reviewTitle: {
     fontSize: SIZES.font + 1,
@@ -414,7 +475,6 @@ const styles = StyleSheet.create({
   },
   reviewDivider: {
     height: 1,
-    backgroundColor: '#E2E8F0',
     marginVertical: 16,
   },
   medLabel: {

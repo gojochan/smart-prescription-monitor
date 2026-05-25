@@ -78,14 +78,14 @@ const PrescriptionHistory = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Prescription Logs" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Prescription Logs" onBackPress={() => navigation.goBack()} />
 
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
           <Ionicons name="search-outline" size={20} color={COLORS.textSecondary} style={styles.searchIcon} />
           <TextInput
             placeholder="Search patient, diagnosis, or code..."
-            placeholderTextColor={COLORS.textSecondary}
+            placeholderTextColor="#E5E7EB"
             value={searchQuery}
             onChangeText={setSearchQuery}
             style={styles.searchInput}
@@ -162,13 +162,16 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
-    borderRadius: BORDER_RADIUS.input,
-    paddingHorizontal: 16,
-    height: 54,
-    borderWidth: 1.2,
-    borderColor: COLORS.border,
-    ...SHADOWS.soft,
+    backgroundColor: 'rgba(15,23,42,0.20)',
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    height: 56,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   searchIcon: {
     marginRight: 10,
@@ -176,7 +179,8 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: SIZES.font,
-    color: COLORS.text,
+    color: '#FFFFFF',
+    fontWeight: '500',
     height: '100%',
   },
   filterContainer: {
@@ -291,7 +295,6 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 45,
-    backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,

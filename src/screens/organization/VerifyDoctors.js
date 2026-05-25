@@ -89,7 +89,7 @@ const VerifyDoctors = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Practitioner Verification" onBackPress={() => navigation.goBack()} />
+      <Header onSkipPress={() => console.log("Skip")} title="Practitioner Verification" onBackPress={() => navigation.goBack()} />
 
       {queue.length > 0 ? (
         <FlatList
@@ -260,7 +260,6 @@ const styles = StyleSheet.create({
   docsBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0F9FF',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -299,7 +298,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.2,
@@ -337,7 +335,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   credList: {
-    backgroundColor: '#F8FAFC',
     borderRadius: 14,
     padding: 16,
     borderWidth: 1.2,
@@ -437,7 +434,6 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 45,
-    backgroundColor: '#F0FDF4',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,

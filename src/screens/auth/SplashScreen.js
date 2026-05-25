@@ -16,7 +16,7 @@ const SplashScreen = ({ navigation }) => {
     // 1. Fade in the logo wrapper
     Animated.timing(fadeLogoAnim, {
       toValue: 1,
-      duration: 800,
+      duration: 500,
       useNativeDriver: true,
     }).start();
 
@@ -41,22 +41,21 @@ const SplashScreen = ({ navigation }) => {
       Animated.delay(400),
       Animated.timing(loadingProgressAnim, {
         toValue: 1,
-        duration: 2200,
+        duration: 1200,
         useNativeDriver: false,
       })
     ]).start(() => {
       // 5. Navigate to Onboarding after progress fills
-      setTimeout(() => {
-        navigation.replace('Onboarding');
-      }, 600);
-    });
-
+    setTimeout(() => {
+    navigation.replace('Onboarding');
+  }, 3000);
+});
     // 4. Fade in tagline and bottom text when progress is ~70% (using delay)
     Animated.sequence([
-      Animated.delay(1600),
+      Animated.delay(500),
       Animated.timing(fadeTextAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 400,
         useNativeDriver: true,
       })
     ]).start();
@@ -148,7 +147,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 120,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.dark,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000000',
@@ -169,7 +168,6 @@ const styles = StyleSheet.create({
     width: 220,
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
