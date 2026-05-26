@@ -1,42 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const PrescriptionHistory = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
-  const [prescriptions, setPrescriptions] = useState([]);
 
-  const filters = ['All', 'Generated', 'Signed'];
+  const filters = ['All', 'Generated', 'Signed', 'Pending'];
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const res = await api.doctor.getHistory();
-        if (res.success) {
-          const list = res.data.map(item => ({
-            id: item.id.toString(),
-            patientName: item.patientName,
-            age: item.patientAge.toString(),
-            date: new Date(item.createdAt).toLocaleDateString(),
-            diagnosis: item.diagnosis,
-            status: item.isSigned ? 'Signed' : 'Generated',
-            code: `SPM-${item.id}-${item.patientName.slice(0, 2).toUpperCase()}`,
-            pdfUrl: item.pdfPath
-          }));
-          setPrescriptions(list);
-        }
-      } catch (error) {
-        console.error('History Fetch Error:', error);
-      }
-    };
-    fetchHistory();
-  }, []);
+  const initialPrescriptions = [
+    { id: '1', patientName: 'Vikram Singh', age: '32', date: 'May 22, 2026', diagnosis: 'Cardio Checkup - Hypertensive', status: 'Generated', code: 'SPM-9821-LH' },
+    { id: '2', patientName: 'Penny Teller', age: '28', date: 'May 21, 2026', diagnosis: 'General Allergy - Seasonal Asthma', status: 'Signed', code: 'SPM-1024-PT' },
+    { id: '3', patientName: 'Sheldon Cooper', age: '35', date: 'May 20, 2026', diagnosis: 'Neuro Consultation - Mild Insomnia', status: 'Pending', code: 'SPM-5921-SC' },
+    { id: '4', patientName: 'Rajesh Koothrappali', age: '30', date: 'May 18, 2026', diagnosis: 'Selective Mutism - Progress Check', status: 'Signed', code: 'SPM-4012-RK' },
+    { id: '5', patientName: 'Bernadette Rostenkowski', age: '29', date: 'May 15, 2026', diagnosis: 'Immunology - Routine Checkup', status: 'Generated', code: 'SPM-3081-BR' },
+    { id: '6', patientName: 'Howard Wolowitz', age: '33', date: 'May 10, 2026', diagnosis: 'Audiology - Vestibular Migraine', status: 'Signed', code: 'SPM-2980-HW' },
+  ];
 
-  const filteredPrescriptions = prescriptions.filter(item => {
+  const filteredPrescriptions = initialPrescriptions.filter(item => {
     const matchesSearch = item.patientName.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.diagnosis.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           item.code.toLowerCase().includes(searchQuery.toLowerCase());

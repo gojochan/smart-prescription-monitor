@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../../components/Header';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const ManageMedicines = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,28 +13,12 @@ const ManageMedicines = ({ navigation }) => {
 
   const [medicines, setMedicines] = useState([]);
 
-  const loadMedicines = async () => {
-    try {
-      const res = await api.org.getMedicines();
-      if (res.success) {
-        const formatted = res.data.map(item => ({
-          id: item.id.toString(),
-          name: item.name,
-          category: item.category,
-          price: item.price,
-          stock: item.stock,
-          threshold: item.threshold,
-          unit: item.unit
-        }));
-        setMedicines(formatted);
-      }
-    } catch (error) {
-      console.error('Fetch Medicines Error:', error);
-    }
-  };
-
   useEffect(() => {
-    loadMedicines();
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/organization/medicines')
+    //   .then(res => res.json())
+    //   .then(data => setMedicines(data))
+    //   .catch(err => console.error('API Error:', err));
   }, []);
 
   const filteredMeds = medicines.filter(item => 
@@ -43,23 +26,24 @@ const ManageMedicines = ({ navigation }) => {
     item.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleRefillSubmit = async () => {
+  const handleRefillSubmit = () => {
     const qty = parseInt(refillQty, 10);
     if (isNaN(qty) || qty <= 0) {
       Alert.alert('Invalid Quantity', 'Please enter a valid positive number for stock refill.');
       return;
     }
 
-    try {
-      await api.org.refillMedicineStock(selectedMed.id, qty);
-      Alert.alert('Refill Completed', `Successfully added ${qty} units to ${selectedMed.name} stock level.`);
-      setRefillModalVisible(false);
-      setSelectedMed(null);
-      setRefillQty('');
-      loadMedicines(); // reload stock level
-    } catch (error) {
-      Alert.alert('Refill Failed', error.message || 'Server error.');
-    }
+    setMedicines(prev => prev.map(m => {
+      if (m.id === selectedMed.id) {
+        return { ...m, stock: m.stock + qty };
+      }
+      return m;
+    }));
+
+    Alert.alert('Refill Completed', `Successfully added ${qty} units to ${selectedMed.name} stock level.`);
+    setRefillModalVisible(false);
+    setSelectedMed(null);
+    setRefillQty('');
   };
 
   const getStockStatus = (stock, threshold) => {

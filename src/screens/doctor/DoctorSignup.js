@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
 import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const DoctorSignup = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -14,46 +13,13 @@ const DoctorSignup = ({ navigation }) => {
   const [hospital, setHospital] = useState('');
   const [regNumber, setRegNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const validateIndianPhone = (ph) => {
-    const clean = ph.replace(/[\s-()]/g, '');
-    return /^(?:\+91|91)?[6789]\d{9}$/.test(clean);
-  };
-
-  const handleSignup = async () => {
+  const handleSignup = () => {
     if (!name || !email || !phone || !hospital || !regNumber || !password) {
-      Alert.alert('Incomplete Form', 'Please fill out all signup credentials.');
+      alert('Please fill out all signup credentials.');
       return;
     }
-
-    if (!validateIndianPhone(phone)) {
-      Alert.alert('Invalid Phone', 'Please enter a valid Indian phone number (+91 xxxxx xxxxx).');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await api.auth.register({
-        name,
-        email,
-        phone,
-        password,
-        role: 'doctor',
-        hospital,
-        regNumber,
-        specialty: 'Cardiologist'
-      });
-      setLoading(false);
-      Alert.alert(
-        'Registration Submitted',
-        'Your medical verification request has been received. Please log in once approved.',
-        [{ text: 'OK', onPress: () => navigation.navigate('DoctorLogin') }]
-      );
-    } catch (error) {
-      setLoading(false);
-      Alert.alert('Registration Failed', error.message || 'Server error.');
-    }
+    navigation.replace('DoctorDashboard');
   };
 
   return (
@@ -92,7 +58,7 @@ const DoctorSignup = ({ navigation }) => {
             
             <PremiumInput
               label="Contact Phone"
-              placeholder="+91 98765 43210"
+              placeholder="+1 (555) 019-9231"
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"

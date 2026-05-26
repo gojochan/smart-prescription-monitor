@@ -1,54 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../../components/Header';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const MyPrescriptions = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedPrescription, setSelectedPrescription] = useState(null);
-  const [prescriptions, setPrescriptions] = useState([]);
 
   const filters = ['All', 'Active', 'Completed'];
 
-  useEffect(() => {
-    const fetchPrescriptions = async () => {
-      try {
-        const res = await api.patient.getMyPrescriptions();
-        if (res.success) {
-          const list = res.data.map(item => {
-            // Determine active/completed status based on expiry
-            let isRxActive = item.isSigned;
-            if (item.medicines && item.medicines.length > 0) {
-              const rxDate = new Date(item.createdAt);
-              const days = parseInt(item.medicines[0].duration, 10) || 5;
-              const expiry = new Date(rxDate.getTime() + days * 24 * 60 * 60 * 1000);
-              isRxActive = expiry > new Date();
-            }
-            return {
-              id: item.id.toString(),
-              drName: item.doctor ? item.doctor.name : 'Dr. Anjali Desai',
-              specialty: item.doctor ? (item.doctor.specialty || 'Physician') : 'Cardiologist',
-              clinic: item.doctor ? (item.doctor.hospital || 'Smart Medical Center') : 'Smart Medical Center',
-              date: new Date(item.createdAt).toLocaleDateString(),
-              status: isRxActive ? 'Active' : 'Completed',
-              code: `SPM-${item.id}-${item.patientName.slice(0, 2).toUpperCase()}`,
-              diagnosis: item.diagnosis,
-              medicines: item.medicines || []
-            };
-          });
-          setPrescriptions(list);
-        }
-      } catch (error) {
-        console.error('Fetch Prescriptions Error:', error);
-      }
-    };
-
-    fetchPrescriptions();
-  }, []);
+  const prescriptions = [
+    {
+      id: '1',
+      drName: 'Dr. Anjali Desai',
+      specialty: 'Cardiologist',
+      date: 'May 22, 2026',
+      clinic: 'Apollo Hospitals',
+      status: 'Active',
+      code: 'SPM-9821-LH',
+      diagnosis: 'Hypertension Checkup',
+      medicines: [
+        { name: 'Telmisartan Tablets', strength: '40 mg', dosage: '1-0-0', instructions: 'Before breakfast', duration: '30 Days' },
+        { name: 'Amlodipine Besylate', strength: '5 mg', dosage: '0-0-1', instructions: 'At bedtime', duration: '30 Days' },
+      ],
+    },
+    {
+      id: '2',
+      drName: 'Dr. James Smith',
+      specialty: 'Dermatologist',
+      date: 'Apr 10, 2026',
+      clinic: 'Skin & Allergy Care',
+      status: 'Completed',
+      code: 'SPM-3081-BR',
+      diagnosis: 'Eczema Flare-up',
+      medicines: [
+        { name: 'Hydrocortisone Cream', strength: '1%', dosage: 'Apply twice daily', instructions: 'External use', duration: '7 Days' },
+      ],
+    },
+  ];
 
   const filteredPrescriptions = prescriptions.filter(item => {
     const matchesSearch = item.drName.toLowerCase().includes(searchQuery.toLowerCase()) || 

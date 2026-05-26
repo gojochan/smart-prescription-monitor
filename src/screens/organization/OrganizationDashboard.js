@@ -5,41 +5,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import GradientCard from '../../components/GradientCard';
 import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
 const OrganizationDashboard = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('home');
-  const [orgName, setOrgName] = useState('Organization');
 
   const [stats, setStats] = useState([]);
   const [recentLogs, setRecentLogs] = useState([]);
 
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const userStr = await AsyncStorage.getItem('user');
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          if (user.name) setOrgName(user.name);
-        }
-
-        const res = await api.org.getDashboard();
-        setStats([
-          { value: res.data.stats.totalDoctors.toString(), label: 'Doctors', color: COLORS.primary },
-          { value: res.data.stats.pendingDoctors.toString(), label: 'Pending', color: COLORS.warning },
-          { value: res.data.stats.totalMedicines.toString(), label: 'Medicines', color: COLORS.secondary },
-        ]);
-        if (res.data.recentLogs) {
-          setRecentLogs(res.data.recentLogs);
-        }
-      } catch (err) {
-        console.error('Dashboard API Error:', err);
-      }
-    };
-    loadDashboard();
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/organization/dashboard')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setStats(data.stats);
+    //     setRecentLogs(data.recentLogs);
+    //   })
+    //   .catch(err => console.error('API Error:', err));
   }, []);
 
   const quickActions = [
@@ -51,14 +34,7 @@ const OrganizationDashboard = ({ navigation }) => {
   const handleSignOut = () => {
     Alert.alert('Sign Out', 'Log out of medical registry terminal?', [
       { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Log Out',
-        style: 'destructive',
-        onPress: async () => {
-          await api.auth.logout();
-          navigation.replace('RoleSelection');
-        }
-      }
+      { text: 'Log Out', style: 'destructive', onPress: () => navigation.replace('RoleSelection') }
     ]);
   };
 
@@ -68,7 +44,7 @@ const OrganizationDashboard = ({ navigation }) => {
       <View style={styles.topBar}>
         <View>
           <Text style={styles.welcomeText}>System Administrator,</Text>
-          <Text style={styles.facilityName}>{orgName}</Text>
+          <Text style={styles.facilityName}>Organization</Text>
         </View>
         <TouchableOpacity onPress={handleSignOut} style={styles.logoutBtn}>
           <Ionicons name="log-out-outline" size={24} color={COLORS.danger} />

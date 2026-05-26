@@ -10,55 +10,30 @@ import { scheduleTestNotification } from '../../utils/notifications';
 
 const { width } = Dimensions.get('window');
 
-import { api } from '../../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const PatientDashboard = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('home');
+
   const [upcomingDoses, setUpcomingDoses] = useState([]);
   const [quickStats, setQuickStats] = useState([]);
-  const [patientName, setPatientName] = useState('Patient');
 
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        // Load patient details
-        const storedUser = await AsyncStorage.getItem('user');
-        if (storedUser) {
-          const userObj = JSON.parse(storedUser);
-          setPatientName(userObj.name);
-        }
-
-        // Fetch dashboard data
-        const res = await api.patient.getDashboard();
-        if (res.success) {
-          const formattedStats = [
-            { value: res.data.stats.totalPrescriptions.toString(), label: 'Prescriptions', color: COLORS.primary },
-            { value: `${res.data.stats.complianceRate}%`, label: 'Compliance', color: COLORS.secondary },
-            { value: res.data.stats.activeCount.toString(), label: 'Active Pills', color: COLORS.success }
-          ];
-          setQuickStats(formattedStats);
-          
-          // Format schedule reminders for today
-          const reminders = res.data.schedule.map((item, idx) => ({
-            id: idx.toString(),
-            medicine: item.medicineName,
-            dosage: item.dosage,
-            time: new Date().setHours(parseInt(item.time.split(':')[0]) || 8, parseInt(item.time.split(':')[1]) || 0),
-            instructions: item.instructions
-          }));
-          setUpcomingDoses(reminders.slice(0, 3));
-        }
-      } catch (error) {
-        console.error('Patient Dashboard Error:', error);
-      }
-    };
-
-    loadDashboard();
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/patient/quick-stats')
+    //   .then(res => res.json())
+    //   .then(data => setQuickStats(data))
+    //   .catch(err => console.error('API Error:', err));
   }, []);
 
-  const loadReminders = () => {
-    // Legacy support, resolved inline in dashboard load
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadReminders();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const loadReminders = async () => {
+    const data = await getUpcomingReminders();
+    setUpcomingDoses(data.slice(0, 3));
   };
 
   const handleTakeDose = async (id) => {
@@ -89,7 +64,7 @@ const PatientDashboard = ({ navigation }) => {
       <View style={styles.topBar}>
         <View>
           <Text style={styles.welcomeText}>Welcome,</Text>
-          <Text style={styles.patientName}>{patientName}</Text>
+          <Text style={styles.patientName}>Patient</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('PatientProfile')} style={styles.avatarBtn}>
           <LinearGradient colors={[COLORS.primary, COLORS.secondary]} style={styles.avatar}>

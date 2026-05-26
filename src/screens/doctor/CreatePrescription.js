@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import PremiumInput from '../../components/PremiumInput';
@@ -10,7 +10,6 @@ import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 import { savePrescription, saveUpcomingReminders } from '../../utils/storage';
 import { scheduleMedicineReminders } from '../../utils/notifications';
-import { api } from '../../utils/api';
 
 const CreatePrescription = ({ navigation }) => {
   const [step, setStep] = useState(1);
@@ -20,7 +19,6 @@ const CreatePrescription = ({ navigation }) => {
   const [patientName, setPatientName] = useState('');
   const [patientAge, setPatientAge] = useState('');
   const [patientGender, setPatientGender] = useState('Male');
-  const [patientPhone, setPatientPhone] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
 
   // Medicine Selection States
@@ -62,16 +60,6 @@ const CreatePrescription = ({ navigation }) => {
   };
 
   const handleGenerate = async () => {
-    // Basic validation of Indian number if provided
-    if (patientPhone) {
-      const clean = patientPhone.replace(/[\s-()]/g, '');
-      const isIndian = /^(?:\+91|91)?[6789]\d{9}$/.test(clean);
-      if (!isIndian) {
-        Alert.alert('Invalid Phone', 'Please enter a valid 10-digit Indian phone number for the patient.');
-        return;
-      }
-    }
-
     setLoading(true);
     
     // Determine frequency text
@@ -84,62 +72,31 @@ const CreatePrescription = ({ navigation }) => {
       finalFrequency = `Every ${val} ${unitLabel}`;
     }
     
-    const payload = {
+    const prescriptionData = {
       patientName,
-      patientAge: parseInt(patientAge, 10),
+      patientAge,
       patientGender,
-      patientPhone: patientPhone || null,
       diagnosis,
-      medicines: [
-        {
-          name: medicine,
-          strength: dosage || '1 Tablet',
-          dosage: dosage || '1 Tablet',
-          frequency: finalFrequency || 'Once daily',
-          duration: duration || '1 day',
-          instructions: instructions || 'No additional instructions',
-          startTime: startTime || '09:00 AM'
-        }
-      ]
+      medicine,
+      dosage: dosage || '1 Tablet',
+      frequency: finalFrequency || 'Once daily',
+      duration: duration || '1 day',
+      instructions: instructions || 'No additional instructions',
+      startTime: startTime || '09:00 AM',
+      doctorId: 'doc_123',
     };
 
-    try {
-      const response = await api.doctor.createPrescription(payload);
-      const savedPrescription = response.data;
-      
-      // Schedule local notifications for patients
-      if (savedPrescription) {
-        const scheduledReminders = await scheduleMedicineReminders(savedPrescription);
-        await saveUpcomingReminders(scheduledReminders);
-      }
-
-      setLoading(false);
-      Alert.alert(
-        'Success',
-        'Prescription successfully submitted and generated on backend server.',
-        [
-          { 
-            text: 'OK', 
-            onPress: () => navigation.navigate('GeneratePDF', { 
-              prescriptionId: savedPrescription.id,
-              patientData: savedPrescription,
-              data: {
-                ...payload.medicines[0],
-                id: savedPrescription.id,
-                patientName,
-                patientAge,
-                patientGender,
-                diagnosis,
-                pdfUrl: savedPrescription.pdfPath
-              }
-            }) 
-          }
-        ]
-      );
-    } catch (error) {
-      setLoading(false);
-      Alert.alert('Submission Error', error.message || 'Could not connect to the backend server.');
+    const savedPrescription = await savePrescription(prescriptionData);
+    
+    if (savedPrescription) {
+      const scheduledReminders = await scheduleMedicineReminders(savedPrescription);
+      await saveUpcomingReminders(scheduledReminders);
     }
+
+    setTimeout(() => {
+      setLoading(false);
+      navigation.navigate('GeneratePDF', { data: prescriptionData });
+    }, 1800);
   };
 
   return (
@@ -203,15 +160,6 @@ const CreatePrescription = ({ navigation }) => {
                 </View>
               </View>
             </View>
-
-             <PremiumInput
-              label="Patient Mobile Number"
-              placeholder="e.g. +91 99999 88888"
-              value={patientPhone}
-              onChangeText={setPatientPhone}
-              keyboardType="phone-pad"
-              iconName="call-outline"
-            />
 
             <PremiumInput
               label="Diagnosis / Clinical Impression"

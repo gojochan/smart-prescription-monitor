@@ -1,48 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import GradientCard from '../../components/GradientCard';
 import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
 const DoctorDashboard = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('home');
+
   const [stats, setStats] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
-  const [doctorName, setDoctorName] = useState('Doctor');
 
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        // Load doctor details
-        const storedUser = await AsyncStorage.getItem('user');
-        if (storedUser) {
-          const userObj = JSON.parse(storedUser);
-          setDoctorName(userObj.name);
-        }
-
-        // Fetch dashboard data
-        const res = await api.doctor.getDashboard();
-        if (res.success) {
-          const metrics = [
-            { value: res.data.stats.totalPrescriptions.toString(), label: 'Total Scripts', color: COLORS.primary },
-            { value: res.data.stats.uniquePatients.toString(), label: 'Patients Listed', color: COLORS.secondary },
-            { value: res.data.stats.unsignedCount.toString(), label: 'Unsigned Files', color: COLORS.warning }
-          ];
-          setStats(metrics);
-          setRecentActivities(res.data.recentPrescriptions);
-        }
-      } catch (error) {
-        console.error('Dashboard API Error:', error);
-      }
-    };
-
-    loadDashboard();
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/doctor/dashboard')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setStats(data.stats);
+    //     setRecentActivities(data.recentActivities);
+    //   })
+    //   .catch(err => console.error('API Error:', err));
   }, []);
 
   const quickActions = [
@@ -54,12 +34,12 @@ const DoctorDashboard = ({ navigation }) => {
   const renderActivity = ({ item }) => (
     <View style={styles.activityCard}>
       <View style={styles.activityInfo}>
-        <Text style={styles.activityName}>{item.patientName}</Text>
-        <Text style={styles.activityType}>{item.diagnosis} • {new Date(item.createdAt).toLocaleDateString()}</Text>
+        <Text style={styles.activityName}>{item.patient}</Text>
+        <Text style={styles.activityType}>{item.type} • {item.time}</Text>
       </View>
-      <View style={[styles.badge, item.isSigned ? styles.badgeGreen : styles.badgeBlue]}>
-        <Text style={[styles.badgeText, item.isSigned ? styles.badgeTextGreen : styles.badgeTextBlue]}>
-          {item.isSigned ? 'Signed' : 'Unsigned'}
+      <View style={[styles.badge, item.status === 'Generated' ? styles.badgeGreen : styles.badgeBlue]}>
+        <Text style={[styles.badgeText, item.status === 'Generated' ? styles.badgeTextGreen : styles.badgeTextBlue]}>
+          {item.status}
         </Text>
       </View>
     </View>
@@ -71,7 +51,7 @@ const DoctorDashboard = ({ navigation }) => {
       <View style={styles.topBar}>
         <View>
           <Text style={styles.welcomeText}>Welcome back,</Text>
-          <Text style={styles.drName}>{doctorName}</Text>
+          <Text style={styles.drName}>Doctor</Text>
         </View>
         <View style={styles.topActions}>
           <TouchableOpacity onPress={() => navigation.navigate('DoctorNotifications')} style={styles.topIconBtn}>

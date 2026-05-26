@@ -7,7 +7,6 @@ import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
 import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const PatientSignup = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -17,51 +16,20 @@ const PatientSignup = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateIndianPhone = (ph) => {
-    const clean = ph.replace(/[\s-()]/g, '');
-    return /^(?:\+91|91)?[6789]\d{9}$/.test(clean);
-  };
-
-  const handleSignup = async () => {
+  const handleSignup = () => {
     if (!name || !phone || !age || !password) {
       Alert.alert('Incomplete Form', 'Please fill out all mandatory patient registration details.');
       return;
     }
-
-    if (!validateIndianPhone(phone)) {
-      Alert.alert('Invalid Phone', 'Please enter a valid Indian mobile number (+91 xxxxx xxxxx).');
-      return;
-    }
-
     setIsLoading(true);
-    try {
-      await api.auth.register({
-        name,
-        email,
-        phone,
-        password,
-        role: 'patient',
-        age,
-        gender: 'Male' // default
-      });
+    setTimeout(() => {
       setIsLoading(false);
       Alert.alert(
         'Registration Success',
         'Your patient account has been created successfully. Welcome to SPM!',
-        [{ text: 'Open Dashboard', onPress: async () => {
-          // Log in automatically after registration
-          try {
-            await api.auth.login(phone, password);
-            navigation.replace('PatientDashboard');
-          } catch (e) {
-            navigation.replace('PatientLogin');
-          }
-        }}]
+        [{ text: 'Open Dashboard', onPress: () => navigation.replace('PatientDashboard') }]
       );
-    } catch (error) {
-      setIsLoading(false);
-      Alert.alert('Registration Failed', error.message || 'Server error.');
-    }
+    }, 2000);
   };
 
   return (
@@ -105,7 +73,7 @@ const PatientSignup = ({ navigation }) => {
 
             <PremiumInput
               label="MOBILE PHONE NUMBER"
-              placeholder="e.g. +91 98765 43210"
+              placeholder="e.g. +1 (555) 987-6543"
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"

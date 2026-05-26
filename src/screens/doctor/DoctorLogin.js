@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PremiumInput from '../../components/PremiumInput';
 import PremiumButton from '../../components/PremiumButton';
@@ -7,7 +7,6 @@ import Loading from '../../components/Loading';
 import SafeImage from '../../components/SafeImage';
 import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const DoctorLogin = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -15,9 +14,9 @@ const DoctorLogin = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     const newErrors = {};
-    if (!email) newErrors.email = 'Email address or Phone number is required';
+    if (!email) newErrors.email = 'Email address is required';
     if (!password) newErrors.password = 'Password is required';
     
     if (Object.keys(newErrors).length > 0) {
@@ -27,19 +26,10 @@ const DoctorLogin = ({ navigation }) => {
     
     setErrors({});
     setLoading(true);
-    try {
-      const result = await api.auth.login(email, password);
+    setTimeout(() => {
       setLoading(false);
-      if (result.role !== 'doctor') {
-        Alert.alert('Access Denied', 'This credential is not registered as a doctor.');
-        await api.auth.logout();
-        return;
-      }
       navigation.replace('DoctorDashboard');
-    } catch (error) {
-      setLoading(false);
-      Alert.alert('Login Failed', error.message || 'Check your internet connection or server.');
-    }
+    }, 1500);
   };
 
   return (

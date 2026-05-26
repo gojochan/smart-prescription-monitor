@@ -4,22 +4,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../../components/Header';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const VerifyDoctors = ({ navigation }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [queue, setQueue] = useState([]);
 
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const res = await api.org.getVerifyDoctors();
-        setQueue(res.data);
-      } catch (err) {
-        console.error('VerifyDoctors API Error:', err);
-      }
-    };
-    fetchDoctors();
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/organization/verify-doctors')
+    //   .then(res => res.json())
+    //   .then(data => setQueue(data))
+    //   .catch(err => console.error('API Error:', err));
   }, []);
 
   const handleAction = (id, doctorName, action) => {
@@ -31,16 +26,10 @@ const VerifyDoctors = ({ navigation }) => {
         { 
           text: action === 'approve' ? 'Approve' : 'Decline',
           style: action === 'approve' ? 'default' : 'destructive',
-          onPress: async () => {
-            try {
-              await api.org.updateVerifyDoctor(id, action === 'approve' ? 'approved' : 'rejected');
-              setQueue(prev => prev.filter(dr => dr.id !== id));
-              setSelectedDoctor(null);
-              Alert.alert('System Registry Synced', `${doctorName} has been successfully ${action === 'approve' ? 'approved' : 'rejected'}.`);
-            } catch (err) {
-              console.error('Update Doctor Verify Error:', err);
-              Alert.alert('Error', 'Failed to update doctor status. Please try again.');
-            }
+          onPress: () => {
+            setQueue(prev => prev.filter(dr => dr.id !== id));
+            setSelectedDoctor(null);
+            Alert.alert('System Registry Synced', `${doctorName} has been successfully ${action === 'approve' ? 'approved' : 'rejected'}.`);
           }
         }
       ]

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, SafeAreaView, FlatList, TextInput, TouchableOpa
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const PatientHistory = ({ navigation }) => {
   const [search, setSearch] = useState('');
@@ -11,36 +10,12 @@ const PatientHistory = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const res = await api.doctor.getPatientHistory(search, '');
-        const items = res.data || [];
-        // Group by patientName to aggregate diagnoses
-        const grouped = {};
-        items.forEach((item, index) => {
-          const key = item.patientName;
-          if (!grouped[key]) {
-            grouped[key] = {
-              id: item._id || index.toString(),
-              name: item.patientName,
-              gender: item.patientGender,
-              age: item.patientAge + ' Yrs',
-              visits: 'N/A',
-              diagnoses: item.diagnosis ? [item.diagnosis] : [],
-            };
-          } else {
-            if (item.diagnosis && !grouped[key].diagnoses.includes(item.diagnosis)) {
-              grouped[key].diagnoses.push(item.diagnosis);
-            }
-          }
-        });
-        setPatients(Object.values(grouped));
-      } catch (err) {
-        console.error('PatientHistory API Error:', err);
-      }
-    };
-    fetchPatients();
-  }, [search]);
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/doctor/patients')
+    //   .then(res => res.json())
+    //   .then(data => setPatients(data))
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   const filteredPatients = patients.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())

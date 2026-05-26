@@ -8,7 +8,6 @@ import Loading from '../../components/Loading';
 import SafeImage from '../../components/SafeImage';
 import PremiumBackground from '../../components/PremiumBackground';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const PatientLogin = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -16,9 +15,9 @@ const PatientLogin = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     const newErrors = {};
-    if (!email) newErrors.email = 'Email or Mobile number is required';
+    if (!email) newErrors.email = 'Email address is required';
     if (!password) newErrors.password = 'Password is required';
     
     if (Object.keys(newErrors).length > 0) {
@@ -28,19 +27,10 @@ const PatientLogin = ({ navigation }) => {
     
     setErrors({});
     setIsLoading(true);
-    try {
-      const result = await api.auth.login(email, password);
+    setTimeout(() => {
       setIsLoading(false);
-      if (result.role !== 'patient') {
-        Alert.alert('Access Denied', 'This credential is not registered as a patient.');
-        await api.auth.logout();
-        return;
-      }
       navigation.replace('PatientDashboard');
-    } catch (error) {
-      setIsLoading(false);
-      Alert.alert('Login Failed', error.message || 'Check your credentials or backend server.');
-    }
+    }, 1500);
   };
 
   return (

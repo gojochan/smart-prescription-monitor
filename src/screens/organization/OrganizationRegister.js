@@ -7,54 +7,28 @@ import PremiumButton from '../../components/PremiumButton';
 import Loading from '../../components/Loading';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
-import { api } from '../../utils/api';
-
 const OrganizationRegister = ({ navigation }) => {
   const [facilityName, setFacilityName] = useState('');
   const [licenseNo, setLicenseNo] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [address, setAddress] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateIndianPhone = (ph) => {
-    const clean = ph.replace(/[\s-()]/g, '');
-    return /^(?:\+91|91)?[6789]\d{9}$/.test(clean);
-  };
-
-  const handleRegister = async () => {
-    if (!facilityName || !licenseNo || !email || !phone || !password || !address) {
+  const handleRegister = () => {
+    if (!facilityName || !licenseNo || !email || !password || !address) {
       Alert.alert('Missing Info', 'Please fill out all clinical facility registration details.');
       return;
     }
-
-    if (!validateIndianPhone(phone)) {
-      Alert.alert('Invalid Phone', 'Please enter a valid Indian contact mobile number (+91 xxxxx xxxxx).');
-      return;
-    }
-
     setIsLoading(true);
-    try {
-      await api.auth.register({
-        name: facilityName,
-        email,
-        phone,
-        password,
-        role: 'organization',
-        facilityLicense: licenseNo,
-        address
-      });
+    setTimeout(() => {
       setIsLoading(false);
       Alert.alert(
         'Registration Initiated',
         'Clinical facility application successfully sent. Waiting for medical board review.',
         [{ text: 'Proceed to Terminal', onPress: () => navigation.replace('OrganizationLogin') }]
       );
-    } catch (error) {
-      setIsLoading(false);
-      Alert.alert('Registration Failed', error.message || 'Server error.');
-    }
+    }, 2000);
   };
 
   return (
@@ -102,15 +76,6 @@ const OrganizationRegister = ({ navigation }) => {
               onChangeText={setEmail}
               keyboardType="email-address"
               icon="mail-outline"
-            />
-
-            <PremiumInput
-              label="ADMINISTRATOR PHONE NUMBER"
-              placeholder="e.g. +91 98888 88888"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              icon="call-outline"
             />
 
             <PremiumInput

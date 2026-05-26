@@ -7,7 +7,6 @@ import * as FileSystem from 'expo-file-system/legacy';
 import Header from '../../components/Header';
 import Loading from '../../components/Loading';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
-import { api } from '../../utils/api';
 
 const defaultPatient = {
   patientName: 'Rahul Sharma',
@@ -85,7 +84,7 @@ const GeneratePDF = ({ route, navigation }) => {
           <div class="header">
             <h1>SMART MEDICAL CENTER</h1>
             <p>100 Innovation Way, Tech Park, Suite 400</p>
-            <p>Tel: +91 99999 88888 • www.smartprescription.in</p>
+            <p>Tel: +1 (555) 123-4567 • www.smartprescription.com</p>
           </div>
           <div class="divider"></div>
           <div class="dr-details">
@@ -158,28 +157,12 @@ const GeneratePDF = ({ route, navigation }) => {
     }
   };
 
-  const handleSign = async () => {
-    if (!prescriptionId) {
-      // Fallback for preview without id
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsSigned(true);
-        Alert.alert('Signed', 'Prescription signed locally (preview mode).');
-      }, 1000);
-      return;
-    }
-
+  const handleSign = () => {
     setIsLoading(true);
-    try {
-      await api.doctor.signPrescription(prescriptionId);
+    setTimeout(() => {
       setIsLoading(false);
       setIsSigned(true);
-      Alert.alert('Verified Registry', 'Digital cryptographic signature successfully applied to official health records.');
-    } catch (error) {
-      setIsLoading(false);
-      Alert.alert('Signing Error', error.message || 'Failed to apply signature to server.');
-    }
+    }, 1500);
   };
 
   return (
@@ -202,7 +185,7 @@ const GeneratePDF = ({ route, navigation }) => {
             <View style={styles.clinicDetails}>
               <Text style={styles.clinicName}>SMART MEDICAL CENTER</Text>
               <Text style={styles.clinicSub}>100 Innovation Way, Tech Park, Suite 400</Text>
-              <Text style={styles.clinicPhone}>Tel: +91 99999 88888 • www.smartprescription.in</Text>
+              <Text style={styles.clinicPhone}>Tel: +1 (555) 123-4567 • www.smart prescription.com</Text>
             </View>
             <View style={styles.spmLogo}>
               <Ionicons name="git-network" size={32} color={COLORS.primary} />
