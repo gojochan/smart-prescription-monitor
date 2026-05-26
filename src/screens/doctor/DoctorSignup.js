@@ -35,13 +35,13 @@ const DoctorSignup = ({ navigation }) => {
 
           <View style={styles.header}>
             <Text style={styles.title}>Register Account</Text>
-            <Text style={styles.subtitle}>Apply as a secure medical practitioner</Text>
+            <Text style={styles.subtitle}>Apply as a secure doctor</Text>
           </View>
 
           <View style={styles.formContainer}>
             <PremiumInput
               label="Full Name (with Prefix)"
-              placeholder="Dr. Sarah Wilson"
+              placeholder="Dr. Anjali Desai"
               value={name}
               onChangeText={setName}
               iconName="person-outline"
@@ -49,7 +49,7 @@ const DoctorSignup = ({ navigation }) => {
             
             <PremiumInput
               label="Official Email"
-              placeholder="s.wilson@smp-practitioner.org"
+              placeholder="a.desai@smp-practitioner.org"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -67,7 +67,7 @@ const DoctorSignup = ({ navigation }) => {
             
             <PremiumInput
               label="Hospital / Institution"
-              placeholder="Metropolitan Medical Center"
+              placeholder="Fortis Healthcare"
               value={hospital}
               onChangeText={setHospital}
               iconName="business-outline"

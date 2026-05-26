@@ -39,7 +39,7 @@ const PremiumButton = ({
   };
 
   const isOutline = type === 'outline';
-  const defaultGradientColors = gradientColors || COLORS?.accentGradient || ['#667EEA', '#764BA2'];
+  const defaultGradientColors = gradientColors || ['#334155', '#0F172A'];
   
   // Fallback colors for different button types
   const getDisabledColors = () => {
@@ -103,19 +103,17 @@ const styles = StyleSheet.create({
   },
   button: {
     minHeight: 56,
-    borderRadius: BORDER_RADIUS?.button || 12,
+    borderRadius: 24, // updated to 18-24 per requirements
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     paddingHorizontal: SIZES?.lg || 20,
     paddingVertical: SIZES?.sm || 8,
-    ...(SHADOWS?.glow || {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 5,
-      elevation: 3,
-    }),
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
   },
   outlineButton: {
     backgroundColor: COLORS?.glass || 'rgba(255, 255, 255, 0.1)',

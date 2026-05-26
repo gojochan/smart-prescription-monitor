@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, TextInput, Alert, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -11,14 +11,15 @@ const ManageMedicines = ({ navigation }) => {
   const [refillQty, setRefillQty] = useState('');
   const [refillModalVisible, setRefillModalVisible] = useState(false);
 
-  const [medicines, setMedicines] = useState([
-    { id: '1', name: 'Telmisartan Tablets IP', category: 'Cardiology', stock: 1200, unit: 'Tablets', threshold: 300, price: '$0.12' },
-    { id: '2', name: 'Amlodipine Besylate', category: 'Cardiology', stock: 150, unit: 'Tablets', threshold: 250, price: '$0.08' }, // LOW STOCK
-    { id: '3', name: 'Atorvastatin Calcium', category: 'Cardiology', stock: 800, unit: 'Tablets', threshold: 200, price: '$0.15' },
-    { id: '4', name: 'Hydrocortisone Cream', category: 'Dermatology', stock: 45, unit: 'Tubes', threshold: 50, price: '$2.40' }, // LOW STOCK
-    { id: '5', name: 'Metformin Hydrochloride', category: 'Diabetology', stock: 2400, unit: 'Tablets', threshold: 400, price: '$0.05' },
-    { id: '6', name: 'Amoxicillin Trihydrate', category: 'Antibiotics', stock: 650, unit: 'Capsules', threshold: 150, price: '$0.30' },
-  ]);
+  const [medicines, setMedicines] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/organization/medicines')
+    //   .then(res => res.json())
+    //   .then(data => setMedicines(data))
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   const filteredMeds = medicines.filter(item => 
     item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 

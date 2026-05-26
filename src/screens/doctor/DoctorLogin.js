@@ -70,7 +70,7 @@ const DoctorLogin = ({ navigation }) => {
           <View style={styles.form}>
             <PremiumInput
               label="Official Email Address"
-              placeholder="e.g. sarah.wilson@smp.com"
+              placeholder="e.g. anjali.desai@smp.com"
               value={email}
               onChangeText={(text) => { setEmail(text); setErrors(prev => ({...prev, email: null})); }}
               keyboardType="email-address"

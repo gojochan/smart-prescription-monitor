@@ -126,7 +126,7 @@ const CreatePrescription = ({ navigation }) => {
             
             <PremiumInput
               label="Patient Full Name"
-              placeholder="e.g. Leonard Hofstadter"
+              placeholder="e.g. Vikram Singh"
               value={patientName}
               onChangeText={setPatientName}
               iconName="person-outline"

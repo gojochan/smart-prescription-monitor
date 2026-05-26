@@ -49,14 +49,14 @@ const DoctorVerification = ({ navigation }) => {
           <View style={styles.header}>
             <Text style={styles.title}>Apply for Secure Access</Text>
             <Text style={styles.subtitle}>
-              Verify your medical practitioner credentials to initiate smart prescription writing.
+              Verify your doctor credentials to initiate smart prescription writing.
             </Text>
           </View>
 
           <View style={styles.form}>
             <PremiumInput
               label="Full Name (with Prefix)"
-              placeholder="e.g. Dr. Sarah Wilson"
+              placeholder="e.g. Dr. Anjali Desai"
               value={name}
               onChangeText={setName}
               iconName="person-outline"
@@ -88,7 +88,7 @@ const DoctorVerification = ({ navigation }) => {
 
             <PremiumInput
               label="Official Medical Email"
-              placeholder="e.g. s.wilson@metro-cardio.org"
+              placeholder="e.g. a.desai@metro-cardio.org"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"

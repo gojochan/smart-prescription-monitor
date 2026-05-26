@@ -75,7 +75,7 @@ const PatientLogin = ({ navigation }) => {
           <View style={styles.formCard}>
             <PremiumInput
               label="EMAIL OR MOBILE NUMBER"
-              placeholder="e.g. john.doe@gmail.com"
+              placeholder="e.g. rahul.sharma@gmail.com"
               value={email}
               onChangeText={(text) => { setEmail(text); setErrors(prev => ({...prev, email: null})); }}
               keyboardType="email-address"

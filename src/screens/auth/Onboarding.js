@@ -41,10 +41,10 @@ const Onboarding = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Floating Pill Skip Button - Moved Lower for Thumb Access */}
+      {/* Floating Pill Skip Button - Top Right */}
       <TouchableOpacity onPress={() => navigation.replace('RoleSelection')} style={styles.skipPill}>
         <Text style={styles.skipPillText}>Skip</Text>
-        <Ionicons name="arrow-forward" size={16} color={COLORS.primary} style={{marginLeft: 6}} />
+        <Ionicons name="arrow-forward" size={16} color={COLORS.primary || '#007AFF'} style={{marginLeft: 6}} />
       </TouchableOpacity>
 
       <View style={styles.slideContainer}>
@@ -80,8 +80,21 @@ const Onboarding = ({ navigation }) => {
         <PremiumButton
           title={currentSlideIndex === SLIDES.length - 1 ? 'Get Started' : 'Continue'}
           onPress={handleNext}
-          gradientColors={SLIDES[currentSlideIndex].colors}
-          style={styles.button}
+          gradientColors={
+            currentSlideIndex === SLIDES.length - 1
+              ? ['#475569', '#1E293B'] // slightly lighter premium grey
+              : SLIDES[currentSlideIndex].colors
+          }
+          style={[
+            styles.button,
+            currentSlideIndex === SLIDES.length - 1 && {
+              borderWidth: 1.5,
+              borderColor: 'rgba(255, 255, 255, 0.4)',
+              shadowColor: '#1E293B',
+              shadowOpacity: 0.5,
+              elevation: 8
+            }
+          ]}
         />
       </View>
     </SafeAreaView>
@@ -96,29 +109,35 @@ const styles = StyleSheet.create({
   },
   skipPill: {
     position: 'absolute',
-    top: 80, // Moved lower for comfortable tapping
+    top: 60, // Position Top-right
     right: 24,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 8,
     paddingHorizontal: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: COLORS.border,
+    borderRadius: 24,
+    backgroundColor: COLORS.glass || 'rgba(255, 255, 255, 0.1)',
+    borderWidth: 1.5,
+    borderColor: COLORS.primary || '#007AFF',
     zIndex: 20,
-    ...SHADOWS.soft,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 1,
   },
   skipPillText: {
-    fontSize: SIZES.font,
+    fontSize: SIZES.font || 16,
     fontWeight: '700',
-    color: COLORS.text,
+    color: COLORS.primary || '#007AFF',
   },
   slideContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 32,
-    marginTop: 80, // Added margin to clear the lower skip button
+    paddingTop: 40,
+    paddingBottom: 24, // Prevents text from touching indicators
   },
   illustrationWrapper: {
     width: width * 0.72,
@@ -137,23 +156,24 @@ const styles = StyleSheet.create({
   illustration: {
     width: '100%',
     height: '100%',
-    borderRadius: 20,
+    borderRadius: 10,
   },
   textWrapper: {
     alignItems: 'center',
   },
   title: {
-    fontSize: SIZES.large * 1.15,
+    fontSize: 24,
     fontWeight: '800',
     color: COLORS.text,
     textAlign: 'center',
     marginBottom: 16,
   },
   description: {
-    fontSize: SIZES.medium,
+    fontSize: 18,
     color: COLORS.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
+    marginBottom: 24, // Add proper spacing below description
   },
   footer: {
     paddingHorizontal: 24,
@@ -162,7 +182,8 @@ const styles = StyleSheet.create({
   },
   indicatorContainer: {
     flexDirection: 'row',
-    marginBottom: 32,
+    marginTop: 12, // Add top spacing above indicator container
+    marginBottom: 24, // 20-24px below indicators to CTA button
   },
   indicator: {
     height: 8,

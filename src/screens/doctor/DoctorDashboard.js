@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -11,17 +11,19 @@ const { width } = Dimensions.get('window');
 const DoctorDashboard = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('home');
 
-  const stats = [
-    { label: 'Visits Today', value: '14', icon: 'people', color: COLORS.primary },
-    { label: 'AI Validated', value: '98%', icon: 'ribbon', color: COLORS.secondary },
-    { label: 'Prescriptions', value: '382', icon: 'document-text', color: COLORS.dark },
-  ];
+  const [stats, setStats] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
 
-  const recentActivities = [
-    { id: '1', patient: 'Leonard Hofstadter', type: 'Cardio Checkup', time: '10 mins ago', status: 'Generated' },
-    { id: '2', patient: 'Penny Teller', type: 'General Allergy', time: '1 hr ago', status: 'Signed' },
-    { id: '3', patient: 'Sheldon Cooper', type: 'Neuro Consultation', time: '3 hrs ago', status: 'Pending Review' },
-  ];
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/doctor/dashboard')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setStats(data.stats);
+    //     setRecentActivities(data.recentActivities);
+    //   })
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   const quickActions = [
     { title: 'New Prescription', desc: 'Secure AI-guided steps', icon: 'add-circle-outline', colors: [COLORS.primary, '#0284C7'], route: 'CreatePrescription' },
@@ -49,7 +51,7 @@ const DoctorDashboard = ({ navigation }) => {
       <View style={styles.topBar}>
         <View>
           <Text style={styles.welcomeText}>Welcome back,</Text>
-          <Text style={styles.drName}>Dr. Sarah Wilson</Text>
+          <Text style={styles.drName}>Doctor</Text>
         </View>
         <View style={styles.topActions}>
           <TouchableOpacity onPress={() => navigation.navigate('DoctorNotifications')} style={styles.topIconBtn}>
@@ -64,18 +66,25 @@ const DoctorDashboard = ({ navigation }) => {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Core Quick Stats Row */}
-        <View style={styles.statsRow}>
-          {stats.map((stat, i) => (
-            <LinearGradient 
-              key={i} 
-              colors={[`${stat.color}20`, `${stat.color}05`]} 
-              style={[styles.statBox, { borderColor: `${stat.color}40` }]}
-            >
-              <Text style={styles.statValue}>{stat.value}</Text>
-              <Text style={styles.statLabel}>{stat.label}</Text>
-            </LinearGradient>
-          ))}
-        </View>
+        {/* Core Quick Stats Row */}
+        {stats.length > 0 ? (
+          <View style={styles.statsRow}>
+            {stats.map((stat, i) => (
+              <LinearGradient 
+                key={i} 
+                colors={[`${stat.color}20`, `${stat.color}05`]} 
+                style={[styles.statBox, { borderColor: `${stat.color}40` }]}
+              >
+                <Text style={styles.statValue}>{stat.value}</Text>
+                <Text style={styles.statLabel}>{stat.label}</Text>
+              </LinearGradient>
+            ))}
+          </View>
+        ) : (
+          <View style={[styles.statsRow, { justifyContent: 'center' }]}>
+            <Text style={{color: 'rgba(255,255,255,0.4)', textAlign: 'center'}}>Loading metrics...</Text>
+          </View>
+        )}
 
         {/* Dynamic Promotional AI Glass Card */}
         <GradientCard colors={['#0F172A', '#1E293B']} style={styles.aiCard}>
@@ -123,6 +132,11 @@ const DoctorDashboard = ({ navigation }) => {
           renderItem={renderActivity}
           scrollEnabled={false}
           style={styles.activityList}
+          ListEmptyComponent={
+            <Text style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginVertical: 20 }}>
+              No recent prescriptions found.
+            </Text>
+          }
         />
       </ScrollView>
 

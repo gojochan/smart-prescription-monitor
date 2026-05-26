@@ -7,13 +7,13 @@ import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const DoctorProfile = ({ navigation }) => {
   const doctor = {
-    name: 'Dr. Sarah Wilson',
+    name: 'Dr. Anjali Desai',
     specialty: 'Consulting Cardiologist & MD',
-    hospital: 'Smart Medical Center, Suite 400',
+    hospital: 'Apollo Hospitals, Suite 400',
     license: 'LIC-2024-897315',
     experience: '12 Years',
     education: 'MD - Cardiology, Harvard Medical School',
-    email: 'sarah.wilson@smartmedical.com',
+    email: 'anjali.desai@smartmedical.com',
     phone: '+1 (555) 234-5678',
     status: 'Verified',
   };

@@ -14,7 +14,7 @@ const Appointments = ({ navigation }) => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
   const activeAppointments = [
-    { id: '1', drName: 'Dr. Sarah Wilson', specialty: 'Cardiologist', date: 'May 25, 2026', time: '10:00 AM', clinic: 'Smart Medical Center, Room 402' },
+    { id: '1', drName: 'Dr. Anjali Desai', specialty: 'Cardiologist', date: 'May 25, 2026', time: '10:00 AM', clinic: 'Apollo Hospitals, Room 402' },
   ];
 
   const pastAppointments = [
@@ -23,7 +23,7 @@ const Appointments = ({ navigation }) => {
   ];
 
   const availableDoctors = [
-    { id: '101', name: 'Dr. Sarah Wilson', specialty: 'Cardiology Specialist', rating: '4.9', experience: '12 Yrs', slots: ['09:00 AM', '10:00 AM', '11:30 AM', '04:00 PM'] },
+    { id: '101', name: 'Dr. Anjali Desai', specialty: 'Cardiology Specialist', rating: '4.9', experience: '12 Yrs', slots: ['09:00 AM', '10:00 AM', '11:30 AM', '04:00 PM'] },
     { id: '102', name: 'Dr. James Smith', specialty: 'Consultant Dermatologist', rating: '4.8', experience: '10 Yrs', slots: ['02:00 PM', '02:30 PM', '03:00 PM', '05:30 PM'] },
     { id: '103', name: 'Dr. Aaron Patel', specialty: 'Neurology Expert', rating: '4.9', experience: '15 Yrs', slots: ['10:30 AM', '11:00 AM', '01:00 PM', '03:30 PM'] },
   ];

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import GradientCard from '../../components/GradientCard';
 import SafeImage from '../../components/SafeImage';
 import PremiumBackground from '../../components/PremiumBackground';
+import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
 
 const { width } = Dimensions.get('window');
@@ -26,77 +27,98 @@ const RoleSelection = ({ navigation }) => {
         </View>
 
         <View style={styles.cardsContainer}>
-          {/* Medical Practitioner Card - Vibrant Blue */}
-          <GradientCard
-            colors={['#0284c7', '#0369a1']}
-            onPress={() => navigation.navigate('DoctorLogin')}
-            style={styles.card}
+          {/* Doctor Card - Vibrant Blue */}
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.7)', 'rgba(255, 255, 255, 0.05)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.cardBorderWrapper}
           >
-            <View style={styles.cardContent}>
-              <View style={styles.illustrationWrapper}>
-                <SafeImage 
-                  source={require('../../../assets/images/doctor_illustration.png')} 
-                  style={styles.roleImage} 
-                  resizeMode="cover" 
-                />
+            <GradientCard
+              colors={['#0284c7', '#0369a1']}
+              onPress={() => navigation.navigate('DoctorLogin')}
+              style={styles.card}
+            >
+              <View style={styles.cardContent}>
+                <View style={styles.illustrationWrapper}>
+                  <SafeImage 
+                    source={require('../../../assets/images/doctor_illustration.png')} 
+                    style={styles.roleImage} 
+                    resizeMode="cover" 
+                  />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitleDoctor}>Doctor</Text>
+                  <Text style={styles.cardDescDoctor}>Prescribe smart, access patients and timelines securely.</Text>
+                </View>
+                <View style={[styles.arrowCircle, { shadowColor: '#ffffff' }]}>
+                  <Ionicons name="arrow-forward" size={20} color="#ffffff" />
+                </View>
               </View>
-              <View style={styles.textContainer}>
-                <Text style={styles.cardTitleDoctor}>Medical Practitioner</Text>
-                <Text style={styles.cardDescDoctor}>Prescribe smart, access patients and timelines securely.</Text>
-              </View>
-              <View style={[styles.arrowCircle, { shadowColor: '#38bdf8' }]}>
-                <Ionicons name="arrow-forward" size={18} color="#38bdf8" />
-              </View>
-            </View>
-          </GradientCard>
+            </GradientCard>
+          </LinearGradient>
 
           {/* Patient Care Card - Vibrant Green */}
-          <GradientCard
-            colors={['#059669', '#047857']}
-            onPress={() => navigation.navigate('PatientLogin')}
-            style={styles.card}
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.7)', 'rgba(255, 255, 255, 0.05)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.cardBorderWrapper}
           >
-            <View style={styles.cardContent}>
-              <View style={styles.illustrationWrapper}>
-                <SafeImage 
-                  source={require('../../../assets/images/patient_illustration.png')} 
-                  style={styles.roleImage} 
-                  resizeMode="cover" 
-                />
+            <GradientCard
+              colors={['#059669', '#047857']}
+              onPress={() => navigation.navigate('PatientLogin')}
+              style={styles.card}
+            >
+              <View style={styles.cardContent}>
+                <View style={styles.illustrationWrapper}>
+                  <SafeImage 
+                    source={require('../../../assets/images/patient_illustration.png')} 
+                    style={styles.roleImage} 
+                    resizeMode="cover" 
+                  />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitlePatient}>Patient Care</Text>
+                  <Text style={styles.cardDescPatient}>Manage prescriptions and intake history securely.</Text>
+                </View>
+                <View style={[styles.arrowCircle, { shadowColor: '#ffffff' }]}>
+                  <Ionicons name="arrow-forward" size={20} color="#ffffff" />
+                </View>
               </View>
-              <View style={styles.textContainer}>
-                <Text style={styles.cardTitlePatient}>Patient Care</Text>
-                <Text style={styles.cardDescPatient}>Manage prescriptions, intake history, and secure QR codes.</Text>
-              </View>
-              <View style={[styles.arrowCircle, { shadowColor: '#34d399' }]}>
-                <Ionicons name="arrow-forward" size={18} color="#34d399" />
-              </View>
-            </View>
-          </GradientCard>
+            </GradientCard>
+          </LinearGradient>
 
-          {/* Health Organization Card - Vibrant Orange/Indigo */}
-          <GradientCard
-            colors={['#4338ca', '#3730a3']}
-            onPress={() => navigation.navigate('OrganizationLogin')}
-            style={styles.card}
+          {/* Health Organization Card - Premium Purple */}
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.7)', 'rgba(255, 255, 255, 0.05)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.cardBorderWrapper}
           >
-            <View style={styles.cardContent}>
-              <View style={styles.illustrationWrapper}>
-                <SafeImage 
-                  source={require('../../../assets/images/organization_illustration.png')} 
-                  style={styles.roleImage} 
-                  resizeMode="cover" 
-                />
+            <GradientCard
+              colors={['#8B5CF6', '#6D28D9']}
+              onPress={() => navigation.navigate('OrganizationLogin')}
+              style={styles.card}
+            >
+              <View style={styles.cardContent}>
+                <View style={styles.illustrationWrapper}>
+                  <SafeImage 
+                    source={require('../../../assets/images/organization_illustration.png')} 
+                    style={styles.roleImage} 
+                    resizeMode="cover" 
+                  />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.cardTitleOrg} numberOfLines={2} adjustsFontSizeToFit>Health {"\n"}Organization</Text>
+                  <Text style={styles.cardDescOrg}>Approve doctors, maintain stocks, and view central metrics.</Text>
+                </View>
+                <View style={[styles.arrowCircle, { shadowColor: '#ffffff' }]}>
+                  <Ionicons name="arrow-forward" size={20} color="#ffffff" />
+                </View>
               </View>
-              <View style={styles.textContainer}>
-                <Text style={styles.cardTitleOrg} numberOfLines={2} adjustsFontSizeToFit>Health {"\n"}Organization</Text>
-                <Text style={styles.cardDescOrg}>Approve doctors, maintain stocks, and view central metrics.</Text>
-              </View>
-              <View style={[styles.arrowCircle, { shadowColor: '#818cf8' }]}>
-                <Ionicons name="arrow-forward" size={18} color="#818cf8" />
-              </View>
-            </View>
-          </GradientCard>
+            </GradientCard>
+          </LinearGradient>
         </View>
 
         <TouchableOpacity 
@@ -127,9 +149,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   topLogo: {
-    width: 200,
-    height: 200,
-    marginBottom:-50,
+    width: 190,
+    height: 190,
+   
     marginTop:-20
   },
   header: {
@@ -153,12 +175,17 @@ const styles = StyleSheet.create({
   cardsContainer: {
     width: '100%',
   },
-  card: {
+  cardBorderWrapper: {
     marginBottom: 20,
     width: '100%',
-    borderRadius: 24,
-    borderWidth: 0, // Disable GradientCard default border
+    borderRadius: 25,
+    padding: 1.5,
     ...SHADOWS.soft,
+  },
+  card: {
+    width: '100%',
+    borderRadius: 24,
+    borderWidth: 0,
   },
   cardContent: {
     flexDirection: 'row',
@@ -173,7 +200,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    padding: 6,
+    padding: 2, // Decreased image border padding
     marginRight: 16,
   },
   roleImage: {
@@ -186,48 +213,52 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   cardTitleDoctor: {
-    fontSize: SIZES.medium + 1,
+    fontSize: 20,
     fontWeight: '800',
-    color: '#f8fafc',
+    color: '#ffffff',
     marginBottom: 4,
   },
   cardDescDoctor: {
-    fontSize: SIZES.font - 1,
-    color: '#94a3b8',
-    lineHeight: 18,
+    fontSize: 15,
+    color: '#e2e8f0',
+    lineHeight: 20,
     fontWeight: '500',
   },
   cardTitlePatient: {
-    fontSize: SIZES.medium + 1,
+    fontSize: 20,
     fontWeight: '800',
-    color: '#f8fafc',
+    color: '#ffffff',
     marginBottom: 4,
   },
   cardDescPatient: {
-    fontSize: SIZES.font - 1,
-    color: '#94a3b8',
-    lineHeight: 18,
+    fontSize: 15,
+    color: '#e2e8f0',
+    lineHeight: 20,
     fontWeight: '500',
   },
   cardTitleOrg: {
-    fontSize: SIZES.medium + 1,
+    fontSize: 20,
     fontWeight: '800',
-    color: '#f8fafc',
+    color: '#ffffff',
     marginBottom: 4,
   },
   cardDescOrg: {
-    fontSize: SIZES.font - 1,
-    color: '#94a3b8',
-    lineHeight: 18,
+    fontSize: 15,
+    color: '#e2e8f0',
+    lineHeight: 20,
     fontWeight: '500',
   },
   arrowCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
   },
   adminLinkContainer: {
     flexDirection: 'row',

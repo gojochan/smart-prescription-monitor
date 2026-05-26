@@ -1,44 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const Notifications = ({ navigation }) => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: '1',
-      title: 'Prescription Verification Success',
-      body: 'Patient Leonard Hofstadter successfully scanned and fetched his digital prescription (SPM-9821-LH).',
-      time: '10 mins ago',
-      type: 'success',
-      read: false,
-    },
-    {
-      id: '2',
-      title: 'Security Alert: New Sign-in',
-      body: 'Your credentials were used to sign in to a new iPhone device in Pasadena, CA.',
-      time: '2 hrs ago',
-      type: 'warning',
-      read: false,
-    },
-    {
-      id: '3',
-      title: 'AI Verification Engine Updates',
-      body: 'SPM drug-interaction database updated successfully to version v2.04 with 15 new clinical monographs.',
-      time: '1 day ago',
-      type: 'info',
-      read: true,
-    },
-    {
-      id: '4',
-      title: 'System Registration Approved',
-      body: 'Your clinical credentials have been securely verified by the Organization Admin at Smart Medical Center.',
-      time: '2 days ago',
-      type: 'success',
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/doctor/notifications')
+    //   .then(res => res.json())
+    //   .then(data => setNotifications(data))
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   const markAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));

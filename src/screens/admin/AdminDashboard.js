@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES, SHADOWS, BORDER_RADIUS } from '../../styles/theme';
 
 const AdminDashboard = ({ navigation }) => {
-  const stats = [
-    { title: 'Total Doctors', count: '156', icon: 'medkit', color: COLORS.primary },
-    { title: 'Total Patients', count: '8,421', icon: 'people', color: COLORS.secondary },
-    { title: 'Prescriptions', count: '24.5k', icon: 'document-text', color: COLORS.dark },
-    { title: 'Active Issues', count: '3', icon: 'warning', color: COLORS.danger },
-  ];
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/admin/dashboard')
+    //   .then(res => res.json())
+    //   .then(data => setStats(data))
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,15 +28,21 @@ const AdminDashboard = ({ navigation }) => {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.statsGrid}>
-          {stats.map((stat, index) => (
-            <View key={index} style={styles.statCard}>
-              <View style={[styles.iconContainer, { backgroundColor: stat.color + '20' }]}>
-                <Ionicons name={stat.icon} size={24} color={stat.color} />
+          {stats.length > 0 ? (
+            stats.map((stat, index) => (
+              <View key={index} style={styles.statCard}>
+                <View style={[styles.iconContainer, { backgroundColor: stat.color + '20' }]}>
+                  <Ionicons name={stat.icon} size={24} color={stat.color} />
+                </View>
+                <Text style={styles.statCount}>{stat.count}</Text>
+                <Text style={styles.statTitle}>{stat.title}</Text>
               </View>
-              <Text style={styles.statCount}>{stat.count}</Text>
-              <Text style={styles.statTitle}>{stat.title}</Text>
-            </View>
-          ))}
+            ))
+          ) : (
+            <Text style={{color: '#6B7280', textAlign: 'center', width: '100%', marginVertical: 20}}>
+              Loading stats...
+            </Text>
+          )}
         </View>
 
         <Text style={styles.sectionTitle}>Quick Actions</Text>
@@ -44,7 +53,7 @@ const AdminDashboard = ({ navigation }) => {
           </View>
           <View style={styles.actionTextContainer}>
             <Text style={styles.actionTitle}>Verify Doctor Accounts</Text>
-            <Text style={styles.actionDesc}>12 pending verifications</Text>
+            <Text style={styles.actionDesc}>Review pending requests</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color={COLORS.textSecondary} />
         </TouchableOpacity>

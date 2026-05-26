@@ -55,7 +55,7 @@ const OrganizationRegister = ({ navigation }) => {
           <View style={styles.formCard}>
             <PremiumInput
               label="CLINICAL FACILITY / HOSPITAL NAME"
-              placeholder="e.g. Smart Medical Center"
+              placeholder="e.g. Apollo Hospitals"
               value={facilityName}
               onChangeText={setFacilityName}
               icon="business-outline"
@@ -63,7 +63,7 @@ const OrganizationRegister = ({ navigation }) => {
 
             <PremiumInput
               label="FACILITY LICENSE REGISTRATION NO"
-              placeholder="e.g. HOSP-2026-9802-NY"
+              placeholder="e.g. HOSP-2026-9802-MH"
               value={licenseNo}
               onChangeText={setLicenseNo}
               icon="document-text-outline"

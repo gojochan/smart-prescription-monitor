@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, Alert, Modal, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,38 +7,15 @@ import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const VerifyDoctors = ({ navigation }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [queue, setQueue] = useState([
-    {
-      id: '1',
-      name: 'Dr. Bruce Banner',
-      specialty: 'Neuro-Muscular MD',
-      email: 'bruce.banner@caltech.edu',
-      license: 'LIC-77291-NY',
-      education: 'PhD & MD - Biophysics & Neurology, Caltech',
-      dateRequested: 'May 22, 2026',
-      docs: ['Medical_License_Banner.pdf', 'Board_Certification_Neurology.pdf'],
-    },
-    {
-      id: '2',
-      name: 'Dr. Stephen Strange',
-      specialty: 'Neurosurgery MD',
-      email: 'stephen.strange@columbia.edu',
-      license: 'LIC-00001-NY',
-      education: 'MD - Neurosurgery, Columbia University',
-      dateRequested: 'May 21, 2026',
-      docs: ['Columbia_MD_Degree.pdf', 'Clinical_Neurosurgery_Fellowship.pdf'],
-    },
-    {
-      id: '3',
-      name: 'Dr. John Watson',
-      specialty: 'General Practice MD',
-      email: 'john.watson@stbarts.uk',
-      license: 'LIC-88201-GB',
-      education: 'MD - Military Surgery & General Medicine, London',
-      dateRequested: 'May 19, 2026',
-      docs: ['StBarts_Medical_Register.pdf'],
-    },
-  ]);
+  const [queue, setQueue] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/organization/verify-doctors')
+    //   .then(res => res.json())
+    //   .then(data => setQueue(data))
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   const handleAction = (id, doctorName, action) => {
     Alert.alert(

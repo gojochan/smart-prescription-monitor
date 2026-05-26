@@ -82,7 +82,7 @@ export const SIZES = {
   fontMd: 16,
   fontLg: 18,
   fontXl: 24,
-  fontTitle: 32,
+  fontTitle: 24,
 };
 
 export const FONTS = {

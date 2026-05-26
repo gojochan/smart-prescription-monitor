@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -11,22 +11,24 @@ const { width } = Dimensions.get('window');
 const OrganizationDashboard = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('home');
 
-  const stats = [
-    { label: 'Authorized Doctors', value: '18', icon: 'people', color: COLORS.primary },
-    { label: 'Pending Verification', value: '3', icon: 'shield-outline', color: COLORS.warning },
-    { label: 'Active Medicines', value: '450+', icon: 'medical', color: COLORS.secondary },
-  ];
+  const [stats, setStats] = useState([]);
+  const [recentLogs, setRecentLogs] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/organization/dashboard')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setStats(data.stats);
+    //     setRecentLogs(data.recentLogs);
+    //   })
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   const quickActions = [
     { title: 'Verify Practitioners', desc: 'Review credentials & licenses', icon: 'checkbox-outline', colors: [COLORS.primary, '#0284C7'], route: 'VerifyDoctors' },
     { title: 'Pharmacy Analytics', desc: 'Medication prescription metrics', icon: 'analytics-outline', colors: [COLORS.secondary, '#059669'], route: 'Analytics' },
     { title: 'Inventory Levels', desc: 'Hospital drug stocks & counters', icon: 'flask-outline', colors: [COLORS.dark, '#1E293B'], route: 'ManageMedicines' },
-  ];
-
-  const recentLogs = [
-    { id: '1', event: 'Dr. Sarah Wilson verified', detail: 'Patient Leonard H. (SPM-9821-LH)', time: '10 mins ago' },
-    { id: '2', event: 'Amlodipine stock trigger', detail: 'Pharmacy level fell below 200 units', time: '1 hr ago' },
-    { id: '3', event: 'Doctor registry application', detail: 'Dr. Bruce Banner (Neuro-muscular MD)', time: '3 hrs ago' },
   ];
 
   const handleSignOut = () => {
@@ -42,7 +44,7 @@ const OrganizationDashboard = ({ navigation }) => {
       <View style={styles.topBar}>
         <View>
           <Text style={styles.welcomeText}>System Administrator,</Text>
-          <Text style={styles.facilityName}>Smart Medical Center</Text>
+          <Text style={styles.facilityName}>Organization</Text>
         </View>
         <TouchableOpacity onPress={handleSignOut} style={styles.logoutBtn}>
           <Ionicons name="log-out-outline" size={24} color={COLORS.danger} />
@@ -51,18 +53,24 @@ const OrganizationDashboard = ({ navigation }) => {
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Core Stats Row */}
-        <View style={styles.statsRow}>
-          {stats.map((stat, i) => (
-            <LinearGradient 
-              key={i} 
-              colors={[`${stat.color}20`, `${stat.color}05`]} 
-              style={[styles.statBox, { borderColor: `${stat.color}40` }]}
-            >
-              <Text style={styles.statValue}>{stat.value}</Text>
-              <Text style={styles.statLabel}>{stat.label}</Text>
-            </LinearGradient>
-          ))}
-        </View>
+        {stats.length > 0 ? (
+          <View style={styles.statsRow}>
+            {stats.map((stat, i) => (
+              <LinearGradient 
+                key={i} 
+                colors={[`${stat.color}20`, `${stat.color}05`]} 
+                style={[styles.statBox, { borderColor: `${stat.color}40` }]}
+              >
+                <Text style={styles.statValue}>{stat.value}</Text>
+                <Text style={styles.statLabel}>{stat.label}</Text>
+              </LinearGradient>
+            ))}
+          </View>
+        ) : (
+          <View style={[styles.statsRow, { justifyContent: 'center' }]}>
+            <Text style={{color: COLORS.textSecondary, textAlign: 'center'}}>Loading metrics...</Text>
+          </View>
+        )}
 
         {/* Security Announcement Banner */}
         <GradientCard colors={['#0F172A', '#1E293B']} style={styles.securityCard}>
@@ -99,20 +107,24 @@ const OrganizationDashboard = ({ navigation }) => {
         {/* Recent logs */}
         <Text style={styles.sectionTitle}>Realtime Facility Events</Text>
         <View style={styles.logList}>
-          {recentLogs.map((log) => (
-            <View key={log.id} style={styles.logCard}>
-              <View style={styles.logLeft}>
-                <View style={styles.logIconCircle}>
-                  <Ionicons name="git-branch-outline" size={16} color={COLORS.primary} />
+          {recentLogs.length > 0 ? (
+            recentLogs.map((log) => (
+              <View key={log.id} style={styles.logCard}>
+                <View style={styles.logLeft}>
+                  <View style={styles.logIconCircle}>
+                    <Ionicons name="git-branch-outline" size={16} color={COLORS.primary} />
+                  </View>
+                  <View style={styles.logDetails}>
+                    <Text style={styles.logEvent}>{log.event}</Text>
+                    <Text style={styles.logDetailText}>{log.detail}</Text>
+                  </View>
                 </View>
-                <View style={styles.logDetails}>
-                  <Text style={styles.logEvent}>{log.event}</Text>
-                  <Text style={styles.logDetailText}>{log.detail}</Text>
-                </View>
+                <Text style={styles.logTime}>{log.time}</Text>
               </View>
-              <Text style={styles.logTime}>{log.time}</Text>
-            </View>
-          ))}
+            ))
+          ) : (
+            <Text style={{color: COLORS.textSecondary, textAlign: 'center', marginVertical: 20}}>No recent facility events.</Text>
+          )}
         </View>
       </ScrollView>
 

@@ -56,7 +56,7 @@ const PatientSignup = ({ navigation }) => {
           <View style={styles.formCard}>
             <PremiumInput
               label="FULL LEGAL NAME"
-              placeholder="e.g. John Doe"
+              placeholder="e.g. Rahul Sharma"
               value={name}
               onChangeText={setName}
               icon="person-outline"
@@ -64,7 +64,7 @@ const PatientSignup = ({ navigation }) => {
 
             <PremiumInput
               label="EMAIL ADDRESS"
-              placeholder="e.g. john.doe@gmail.com (Optional)"
+              placeholder="e.g. rahul.sharma@gmail.com (Optional)"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"

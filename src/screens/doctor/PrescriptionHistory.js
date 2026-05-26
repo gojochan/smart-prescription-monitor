@@ -11,7 +11,7 @@ const PrescriptionHistory = ({ navigation }) => {
   const filters = ['All', 'Generated', 'Signed', 'Pending'];
 
   const initialPrescriptions = [
-    { id: '1', patientName: 'Leonard Hofstadter', age: '32', date: 'May 22, 2026', diagnosis: 'Cardio Checkup - Hypertensive', status: 'Generated', code: 'SPM-9821-LH' },
+    { id: '1', patientName: 'Vikram Singh', age: '32', date: 'May 22, 2026', diagnosis: 'Cardio Checkup - Hypertensive', status: 'Generated', code: 'SPM-9821-LH' },
     { id: '2', patientName: 'Penny Teller', age: '28', date: 'May 21, 2026', diagnosis: 'General Allergy - Seasonal Asthma', status: 'Signed', code: 'SPM-1024-PT' },
     { id: '3', patientName: 'Sheldon Cooper', age: '35', date: 'May 20, 2026', diagnosis: 'Neuro Consultation - Mild Insomnia', status: 'Pending', code: 'SPM-5921-SC' },
     { id: '4', patientName: 'Rajesh Koothrappali', age: '30', date: 'May 18, 2026', diagnosis: 'Selective Mutism - Progress Check', status: 'Signed', code: 'SPM-4012-RK' },

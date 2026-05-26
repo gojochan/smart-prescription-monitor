@@ -7,16 +7,16 @@ import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const PatientProfile = ({ navigation }) => {
   const patient = {
-    name: 'John Doe',
+    name: 'Rahul Sharma',
     age: '29 Yrs',
     bloodGroup: 'O+ve',
     weight: '72 Kg',
     allergies: 'Penicillin, Sulfa',
     insurance: 'Blue Cross Shield',
     policyId: 'BC-90812-J',
-    email: 'john.doe@gmail.com',
+    email: 'rahul.sharma@gmail.com',
     phone: '+1 (555) 987-6543',
-    emergencyContact: 'Jane Doe (Wife) - +1 (555) 987-6500',
+    emergencyContact: 'Priya Sharma (Wife) - +1 (555) 987-6500',
   };
 
   const handleLogout = () => {

@@ -15,10 +15,10 @@ const MyPrescriptions = ({ navigation }) => {
   const prescriptions = [
     {
       id: '1',
-      drName: 'Dr. Sarah Wilson',
+      drName: 'Dr. Anjali Desai',
       specialty: 'Cardiologist',
       date: 'May 22, 2026',
-      clinic: 'Smart Medical Center',
+      clinic: 'Apollo Hospitals',
       status: 'Active',
       code: 'SPM-9821-LH',
       diagnosis: 'Hypertension Checkup',

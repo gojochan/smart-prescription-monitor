@@ -12,9 +12,17 @@ const { width } = Dimensions.get('window');
 
 const PatientDashboard = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('home');
-  const [qrVisible, setQrVisible] = useState(false);
 
   const [upcomingDoses, setUpcomingDoses] = useState([]);
+  const [quickStats, setQuickStats] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/patient/quick-stats')
+    //   .then(res => res.json())
+    //   .then(data => setQuickStats(data))
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -40,11 +48,6 @@ const PatientDashboard = ({ navigation }) => {
     }
   };
 
-  const quickStats = [
-    { label: 'Weekly Adherence', value: '94%', icon: 'flame', color: COLORS.secondary },
-    { label: 'Active Pills', value: '4 Daily', icon: 'medical', color: COLORS.primary },
-    { label: 'Next Consult', value: '3 Days', icon: 'calendar', color: COLORS.dark },
-  ];
 
   const menuOptions = [
     { title: 'My Prescriptions', desc: 'Secure digital locker', icon: 'document-text-outline', colors: [COLORS.primary, '#0284C7'], route: 'MyPrescriptions' },
@@ -60,45 +63,39 @@ const PatientDashboard = ({ navigation }) => {
       {/* Top Bar */}
       <View style={styles.topBar}>
         <View>
-          <Text style={styles.welcomeText}>Good morning,</Text>
-          <Text style={styles.patientName}>John Doe</Text>
+          <Text style={styles.welcomeText}>Welcome,</Text>
+          <Text style={styles.patientName}>Patient</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('PatientProfile')} style={styles.avatarBtn}>
           <LinearGradient colors={[COLORS.primary, COLORS.secondary]} style={styles.avatar}>
-            <Text style={styles.avatarText}>JD</Text>
+            <Text style={styles.avatarText}>P</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Core Quick Stats Row */}
-        <View style={styles.statsRow}>
-          {quickStats.map((stat, i) => (
-            <LinearGradient 
-              key={i} 
-              colors={[`${stat.color}20`, `${stat.color}05`]} 
-              style={[styles.statBox, { borderColor: `${stat.color}40` }]}
-            >
-              <Text style={styles.statValue}>{stat.value}</Text>
-              <Text style={styles.statLabel}>{stat.label}</Text>
-            </LinearGradient>
-          ))}
-        </View>
-
-        {/* Central Scan QR Card */}
-        <GradientCard colors={['#0F172A', '#1E293B']} style={styles.qrCard} onPress={() => setQrVisible(true)}>
-          <View style={styles.qrContent}>
-            <View style={styles.qrTextCol}>
-              <Text style={styles.qrTitle}>Show Patient QR Key</Text>
-              <Text style={styles.qrDesc}>
-                Let your doctor scan this code to securely push new prescriptions directly to your device.
-              </Text>
-            </View>
-            <View style={styles.qrIconCircle}>
-              <Ionicons name="qr-code" size={32} color={COLORS.primary} />
-            </View>
+        {quickStats.length > 0 ? (
+          <View style={styles.statsRow}>
+            {quickStats.map((stat, i) => (
+              <LinearGradient 
+                key={i} 
+                colors={[`${stat.color}20`, `${stat.color}05`]} 
+                style={[styles.statBox, { borderColor: `${stat.color}40` }]}
+              >
+                <Text style={styles.statValue}>{stat.value}</Text>
+                <Text style={styles.statLabel}>{stat.label}</Text>
+              </LinearGradient>
+            ))}
           </View>
-        </GradientCard>
+        ) : (
+          <View style={styles.emptyStatsContainer}>
+            <Text style={{color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginBottom: 20}}>
+              Loading stats...
+            </Text>
+          </View>
+        )}
+
 
         {/* Next Dose Alert Widget */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
@@ -164,14 +161,6 @@ const PatientDashboard = ({ navigation }) => {
             <Text style={[styles.tabLabel, activeTab === 'home' && styles.tabLabelActive]}>Home</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.tabItem}
-            onPress={() => setQrVisible(true)}
-          >
-            <View style={styles.addTabCircle}>
-              <Ionicons name="qr-code" size={24} color="#FFFFFF" />
-            </View>
-          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.tabItem}
@@ -187,59 +176,6 @@ const PatientDashboard = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Interactive QR Modal */}
-      <Modal
-        visible={qrVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setQrVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <TouchableOpacity onPress={() => setQrVisible(false)} style={styles.modalCloseBtn}>
-              <Ionicons name="close" size={24} color={COLORS.text} />
-            </TouchableOpacity>
-
-            <Text style={styles.modalTitle}>Your Clinical QR Key</Text>
-            <Text style={styles.modalDesc}>
-              Doctors use this secure key to link your file and write prescriptions.
-            </Text>
-
-            {/* Premium Simulated QR Core Grid */}
-            <View style={styles.simulatedQR}>
-              <LinearGradient colors={['#0F172A', '#1E293B']} style={styles.qrInner}>
-                <View style={styles.qrSquareRow}>
-                  <View style={styles.qrSubSquare} />
-                  <View style={[styles.qrSubSquare, { opacity: 0.1 }]} />
-                  <View style={styles.qrSubSquare} />
-                </View>
-                <View style={[styles.qrSquareRow, { marginVertical: 12 }]}>
-                  <View style={[styles.qrSubSquare, { opacity: 0.1 }]} />
-                  <View style={styles.qrSubSquare} />
-                  <View style={[styles.qrSubSquare, { opacity: 0.1 }]} />
-                </View>
-                <View style={styles.qrSquareRow}>
-                  <View style={styles.qrSubSquare} />
-                  <View style={[styles.qrSubSquare, { opacity: 0.1 }]} />
-                  <View style={styles.qrSubSquare} />
-                </View>
-              </LinearGradient>
-            </View>
-
-            <View style={styles.patientIDCard}>
-              <Text style={styles.cardIDLabel}>PATIENT DATA LINK KEY</Text>
-              <Text style={styles.cardIDValue}>SPM-JOHN-DOE-9801</Text>
-            </View>
-
-            <View style={styles.modalFooterNote}>
-              <Ionicons name="lock-closed" size={14} color={COLORS.secondary} />
-              <Text style={styles.footerNoteText}>
-                Encrypted end-to-end. Keys regenerate automatically.
-              </Text>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </PremiumBackground>
   );
 };

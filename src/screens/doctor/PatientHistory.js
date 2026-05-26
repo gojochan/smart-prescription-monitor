@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/Header';
@@ -7,12 +7,15 @@ import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 const PatientHistory = ({ navigation }) => {
   const [search, setSearch] = useState('');
 
-  const patients = [
-    { id: '1', name: 'Leonard Hofstadter', age: '32', gender: 'Male', diagnoses: ['Mild Hypertension', 'Lactose Allergy'], visits: '4 Visits' },
-    { id: '2', name: 'Penny Teller', age: '28', gender: 'Female', diagnoses: ['Seasonal Allergy'], visits: '1 Visit' },
-    { id: '3', name: 'Sheldon Cooper', age: '33', gender: 'Male', diagnoses: ['Arrhythmia Impress', 'Neuro Consultation'], visits: '8 Visits' },
-    { id: '4', name: 'Bernadette Rostenkowski', age: '29', gender: 'Female', diagnoses: ['Post-natal recovery'], visits: '3 Visits' },
-  ];
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/doctor/patients')
+    //   .then(res => res.json())
+    //   .then(data => setPatients(data))
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   const filteredPatients = patients.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -74,6 +77,11 @@ const PatientHistory = ({ navigation }) => {
           renderItem={renderPatient}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
+          ListEmptyComponent={
+            <Text style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginTop: 40 }}>
+              No patient records found.
+            </Text>
+          }
         />
       </View>
     </SafeAreaView>

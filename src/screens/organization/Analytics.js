@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,28 +12,21 @@ const Analytics = ({ navigation }) => {
 
   const timelines = ['Daily', 'Weekly', 'Monthly'];
 
-  const metrics = [
-    { label: 'Total Prescriptions', value: '1,248', change: '+12.4%', icon: 'document-text', color: COLORS.primary },
-    { label: 'Adherence Rating', value: '92.4%', change: '+3.1%', icon: 'checkmark-circle', color: COLORS.success },
-    { label: 'Stock Warning', value: '4 items', change: '-2 items', icon: 'warning', color: COLORS.warning },
-  ];
+  const [metrics, setMetrics] = useState([]);
+  const [topMeds, setTopMeds] = useState([]);
+  const [complianceRates, setComplianceRates] = useState([]);
 
-  const topMeds = [
-    { name: 'Telmisartan 40mg', count: 320, pct: '38%', color: COLORS.primary },
-    { name: 'Amlodipine 5mg', count: 280, pct: '30%', color: COLORS.secondary },
-    { name: 'Atorvastatin 10mg', count: 180, pct: '18%', color: '#94A3B8' },
-    { name: 'Metformin 500mg', count: 120, pct: '14%', color: COLORS.warning },
-  ];
-
-  const complianceRates = [
-    { day: 'Mon', rate: 94 },
-    { day: 'Tue', rate: 88 },
-    { day: 'Wed', rate: 92 },
-    { day: 'Thu', rate: 96 },
-    { day: 'Fri', rate: 91 },
-    { day: 'Sat', rate: 85 },
-    { day: 'Sun', rate: 90 },
-  ];
+  useEffect(() => {
+    // TODO: Replace with original API integration
+    // fetch('https://your-api.com/organization/analytics')
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setMetrics(data.metrics);
+    //     setTopMeds(data.topMeds);
+    //     setComplianceRates(data.complianceRates);
+    //   })
+    //   .catch(err => console.error('API Error:', err));
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,57 +56,75 @@ const Analytics = ({ navigation }) => {
         </View>
 
         {/* Top level stats */}
-        <View style={styles.metricsGrid}>
-          {metrics.map((m, idx) => (
-            <View key={idx} style={[styles.metricCard, { width: metrics.length === 3 && idx === 2 ? '100%' : (width - 64) / 2 }]}>
-              <View style={styles.metricHeader}>
-                <View style={[styles.iconCircle, { backgroundColor: m.color + '20', borderColor: m.color + '40' }]}>
-                  <Ionicons name={m.icon} size={20} color={m.color} />
+        {metrics.length > 0 ? (
+          <View style={styles.metricsGrid}>
+            {metrics.map((m, idx) => (
+              <View key={idx} style={[styles.metricCard, { width: metrics.length === 3 && idx === 2 ? '100%' : (width - 64) / 2 }]}>
+                <View style={styles.metricHeader}>
+                  <View style={[styles.iconCircle, { backgroundColor: m.color + '20', borderColor: m.color + '40' }]}>
+                    <Ionicons name={m.icon} size={20} color={m.color} />
+                  </View>
+                  <Text style={[styles.changeText, m.color === COLORS.warning ? styles.textWarning : styles.textGreen]}>
+                    {m.change}
+                  </Text>
                 </View>
-                <Text style={[styles.changeText, m.color === COLORS.warning ? styles.textWarning : styles.textGreen]}>
-                  {m.change}
-                </Text>
-              </View>
-              <Text style={styles.metricVal}>{m.value}</Text>
-              <Text style={styles.metricLbl}>{m.label}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Adherence Compliance Bar Chart */}
-        <Text style={styles.sectionTitle}>Daily Patient Adherence Rates</Text>
-        <View style={styles.chartCard}>
-          <View style={styles.chartBarRow}>
-            {complianceRates.map((cr, idx) => (
-              <View key={idx} style={styles.chartBarCol}>
-                <View style={styles.barBack}>
-                  <LinearGradient 
-                    colors={COLORS.accentGradient} 
-                    style={[styles.barFill, { height: `${cr.rate}%` }]} 
-                  />
-                </View>
-                <Text style={styles.barRateText}>{cr.rate}%</Text>
-                <Text style={styles.barDayText}>{cr.day}</Text>
+                <Text style={styles.metricVal}>{m.value}</Text>
+                <Text style={styles.metricLbl}>{m.label}</Text>
               </View>
             ))}
           </View>
-        </View>
+        ) : (
+          <View style={[styles.metricsGrid, { justifyContent: 'center' }]}>
+            <Text style={{color: COLORS.textSecondary, textAlign: 'center', width: '100%', marginVertical: 20}}>Loading analytics data...</Text>
+          </View>
+        )}
+
+        {/* Adherence Compliance Bar Chart */}
+        <Text style={styles.sectionTitle}>Daily Patient Adherence Rates</Text>
+        {complianceRates.length > 0 ? (
+          <View style={styles.chartCard}>
+            <View style={styles.chartBarRow}>
+              {complianceRates.map((cr, idx) => (
+                <View key={idx} style={styles.chartBarCol}>
+                  <View style={styles.barBack}>
+                    <LinearGradient 
+                      colors={COLORS.accentGradient} 
+                      style={[styles.barFill, { height: `${cr.rate}%` }]} 
+                    />
+                  </View>
+                  <Text style={styles.barRateText}>{cr.rate}%</Text>
+                  <Text style={styles.barDayText}>{cr.day}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        ) : (
+          <View style={styles.chartCard}>
+            <Text style={{color: COLORS.textSecondary, textAlign: 'center', marginVertical: 40}}>No adherence data available yet.</Text>
+          </View>
+        )}
 
         {/* Top Medications */}
         <Text style={styles.sectionTitle}>Top Prescribed Drug Classes</Text>
-        <View style={styles.medCard}>
-          {topMeds.map((med, idx) => (
-            <View key={idx} style={styles.medItem}>
-              <View style={styles.medHeaderRow}>
-                <Text style={styles.medName}>{med.name}</Text>
-                <Text style={styles.medCount}>{med.count} RXs ({med.pct})</Text>
+        {topMeds.length > 0 ? (
+          <View style={styles.medCard}>
+            {topMeds.map((med, idx) => (
+              <View key={idx} style={styles.medItem}>
+                <View style={styles.medHeaderRow}>
+                  <Text style={styles.medName}>{med.name}</Text>
+                  <Text style={styles.medCount}>{med.count} RXs ({med.pct})</Text>
+                </View>
+                <View style={styles.trackBar}>
+                  <View style={[styles.fillBar, { width: med.pct, backgroundColor: med.color }]} />
+                </View>
               </View>
-              <View style={styles.trackBar}>
-                <View style={[styles.fillBar, { width: med.pct, backgroundColor: med.color }]} />
-              </View>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        ) : (
+          <View style={styles.medCard}>
+            <Text style={{color: COLORS.textSecondary, textAlign: 'center', marginVertical: 20}}>No prescription data available yet.</Text>
+          </View>
+        )}
 
       </ScrollView>
     </SafeAreaView>

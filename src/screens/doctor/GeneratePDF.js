@@ -9,7 +9,7 @@ import Loading from '../../components/Loading';
 import { COLORS, SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const defaultPatient = {
-  patientName: 'John Doe',
+  patientName: 'Rahul Sharma',
   age: '30',
   gender: 'Male',
   diagnosis: 'General Checkup',
@@ -88,7 +88,7 @@ const GeneratePDF = ({ route, navigation }) => {
           </div>
           <div class="divider"></div>
           <div class="dr-details">
-            <h2>Dr. Sarah Wilson, MD</h2>
+            <h2>Dr. Anjali Desai, MD</h2>
             <p style="margin: 5px 0; color: #666;">Consulting Cardiologist & Physician</p>
             <p style="margin: 0; color: #666;">License No: LIC-2024-897315</p>
           </div>
@@ -124,7 +124,7 @@ const GeneratePDF = ({ route, navigation }) => {
           <div class="footer">
             ${isSigned ? '<div class="stamp">DIGITALLY SIGNED</div><br>' : ''}
             <div class="signature">
-              <strong>Dr. Sarah Wilson</strong><br>
+              <strong>Dr. Anjali Desai</strong><br>
               <span style="font-size: 12px; color: #666;">Consultant Physician</span>
             </div>
           </div>
@@ -198,7 +198,7 @@ const GeneratePDF = ({ route, navigation }) => {
           {/* Practitioner Info */}
           <View style={styles.drDetailsRow}>
             <View>
-              <Text style={styles.drName}>Dr. Sarah Wilson, MD</Text>
+              <Text style={styles.drName}>Dr. Anjali Desai, MD</Text>
               <Text style={styles.drSpecialty}>Consulting Cardiologist & Physician</Text>
               <Text style={styles.drLicense}>License No: LIC-2024-897315</Text>
             </View>
@@ -292,7 +292,7 @@ const GeneratePDF = ({ route, navigation }) => {
                   <View style={styles.unsignedLine} />
                 </View>
               )}
-              <Text style={styles.sigDrName}>Dr. Sarah Wilson</Text>
+              <Text style={styles.sigDrName}>Dr. Anjali Desai</Text>
               <Text style={styles.sigDrTitle}>Consultant Physician</Text>
             </View>
           </View>

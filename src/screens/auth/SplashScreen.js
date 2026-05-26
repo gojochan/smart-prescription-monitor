@@ -36,20 +36,18 @@ const SplashScreen = ({ navigation }) => {
       ])
     ).start();
 
-    // 3. Animate loading progress bar from 0 to 1 over 2200ms (starts after 400ms delay)
+    // 3. Animate loading progress bar from 0 to 1 over 3500ms (starts after 400ms delay)
     Animated.sequence([
       Animated.delay(400),
       Animated.timing(loadingProgressAnim, {
         toValue: 1,
-        duration: 1200,
+        duration: 3500,
         useNativeDriver: false,
       })
     ]).start(() => {
-      // 5. Navigate to Onboarding after progress fills
-    setTimeout(() => {
-    navigation.replace('Onboarding');
-  }, 3000);
-});
+      // 5. Navigate to Onboarding immediately after progress fills
+      navigation.replace('Onboarding');
+    });
     // 4. Fade in tagline and bottom text when progress is ~70% (using delay)
     Animated.sequence([
       Animated.delay(500),
@@ -88,7 +86,7 @@ const SplashScreen = ({ navigation }) => {
             ]}
           >
             <SafeImage
-              source={require('../../../assets/images/spm_logo.png')}
+              source={require('../../../assets/images/spm_logo1.png')}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -144,10 +142,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   logoContainer: {
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
     borderRadius: 120,
-    backgroundColor: COLORS.dark,
+    backgroundColor: 'rgb(255,255,255)',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000000',
@@ -158,8 +156,8 @@ const styles = StyleSheet.create({
     marginBottom: 48,
   },
   logo: {
-    width: 220,
-    height: 220,
+    width: 300,
+    height: 300,
   },
   gapSmall: {
     height: 12,
@@ -187,7 +185,7 @@ const styles = StyleSheet.create({
     height: 28,
   },
   appName: {
-    fontSize: SIZES.large * 1.3,
+    fontSize: 32,
     fontWeight: '900',
     color: '#FFFFFF',
     textAlign: 'center',
@@ -198,7 +196,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   tagline: {
-    fontSize: SIZES.medium,
+    fontSize: 18,
     color: '#E2E8F0',
     fontStyle: 'italic',
     fontWeight: '600',
