@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "SRMapp",
+    "slug": "SRMapp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+
+    "icon": "./assets/images/spm_logo.png",
+
+    "userInterfaceStyle": "light",
+
+    "splash": {
+      "image": "./assets/images/spm_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#E6F4FE"
+    },
+
+    "ios": {
+      "supportsTablet": true
+    },
+
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/spm_logo.png",
+        "backgroundColor": "#E6F4FE"
+      },
+      "package": "com.anonymous.SRMapp"
+    },
+
+    "web": {
+      "favicon": "./assets/images/spm_logo.png"
+    },
+
+    "plugins": [
+      "expo-asset"
+    ]
+  }
+}
